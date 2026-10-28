@@ -82,6 +82,9 @@ h1 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 4vw, 
   background: var(--navy); color: #fff; font-size: 28px; font-weight: 700; display: grid; place-items: center; opacity: 0; pointer-events: none; z-index: 20 }
 .pull-hint { position: fixed; left: 50%; top: calc(70px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); width: 44px; height: 44px; border-radius: 50%;
   background: var(--red); color: #fff; font-size: 26px; font-weight: 700; display: grid; place-items: center; opacity: 0; pointer-events: none; z-index: 20 }
+.sel-say { position: fixed; z-index: 40; display: flex; gap: 4px; background: var(--navy); border-radius: 12px; padding: 4px; box-shadow: 0 6px 18px rgba(0,0,0,.3) }
+.sel-say button { background: transparent; border: 0; color: #fff; font-weight: 700; font-size: 15px; padding: 8px 12px; border-radius: 8px; min-height: 40px }
+.sel-say button:hover { background: rgba(255,255,255,.15) }
 .note { margin-top: 26px; color: var(--muted); font-size: 14px }
 
 /* Topic row under the bar */
@@ -178,6 +181,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
 <main id="view"></main>
 <div class="swipe-hint" id="swipeHint" aria-hidden="true">‹</div>
 <div class="pull-hint" id="pullHint" aria-hidden="true">↻</div>
+<div class="sel-say" id="selSay" hidden><button type="button" data-rate="">🔊 Escuchar</button><button type="button" data-rate="0.6">Lento</button></div>
 <button class="fab" id="fab" type="button" aria-haspopup="dialog">☰ Temas</button>
 <button class="fab-chat" id="fabChat" type="button" aria-haspopup="dialog" hidden>💬 Asistente</button>
 <div class="chat" id="chat" role="dialog" aria-label="Asistente para responder" hidden>
@@ -331,6 +335,28 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     if (pd && pd.dy > PULL) { pull.style.opacity = 1; location.reload(); return }
     pd = null; pull.style.opacity = 0; pull.style.transform = "translateX(-50%)";
   });
+
+  // Select a word or part of a sentence to hear only that.
+  const selSay = document.getElementById("selSay");
+  let selText = "";
+  function placeSelSay() {
+    const sel = window.getSelection();
+    const text = sel && !sel.isCollapsed ? sel.toString().trim() : "";
+    const node = text && sel.anchorNode && (sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement);
+    if (!text || !tts || text.length > 400 || (node && node.closest("textarea, input"))) { selSay.hidden = true; return }
+    selText = text;
+    const r = sel.getRangeAt(0).getBoundingClientRect();
+    selSay.hidden = false;
+    const w = selSay.offsetWidth, h = selSay.offsetHeight;
+    const below = r.bottom + 10 + h < window.innerHeight;  // below the text, clear of the phone's own menu above it
+    selSay.style.top = (below ? r.bottom + 10 : Math.max(8, r.top - h - 10)) + "px";
+    selSay.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)) + "px";
+  }
+  let selTimer;
+  document.addEventListener("selectionchange", () => { clearTimeout(selTimer); selTimer = setTimeout(placeSelSay, 250) });
+  window.addEventListener("scroll", () => { if (!selSay.hidden) placeSelSay() }, { passive: true });
+  selSay.addEventListener("pointerdown", e => e.preventDefault());  // keep the selection when the button is pressed
+  selSay.querySelectorAll("button").forEach(b => b.onclick = () => say(selText, b.dataset.rate ? parseFloat(b.dataset.rate) : null));
 
   function renderHome() {
     crumb.textContent = "MAI 630 · Office Hours";
