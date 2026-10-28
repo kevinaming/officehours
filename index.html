@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>MAI 630 Office Hours</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Archivo:wght@600;800&display=swap">
+<style>
+/* Layout: a sticky navigation bar, then one view at a time (home → section → topic), big touch targets for a tablet. */
+:root {
+  --bg: #F3F4F7; --surface: #FFFFFF; --ink: #121A2B; --muted: #5B6476;
+  --navy: #0C1422; --red: #C0122A; --line: #DCE0E8; --chip: #E9ECF3; --es: #3D4A63;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", Verdana, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0B111C; --surface: #141C2B; --ink: #EEF1F6; --muted: #9AA4B6;
+  --navy: #22324F; --red: #FF5A6E; --line: #273249; --chip: #1D2738; --es: #B9C3D6; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0B111C; --surface: #141C2B; --ink: #EEF1F6; --muted: #9AA4B6;
+  --navy: #22324F; --red: #FF5A6E; --line: #273249; --chip: #1D2738; --es: #B9C3D6; color-scheme: dark }
+
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.45 }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--navy) }
+button { font: inherit; color: inherit; cursor: pointer }
+button:focus-visible, select:focus-visible { outline: 3px solid var(--red); outline-offset: 2px }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--navy); color: #fff;
+  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.bar-row { max-width: 980px; margin: 0 auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
+.navbtn { background: rgba(255,255,255,.12); border: 0; border-radius: 10px; padding: 10px 16px; font-weight: 700; color: #fff; min-height: 46px }
+.navbtn:hover { background: rgba(255,255,255,.22) }
+.crumb { flex: 1; min-width: 0; font-family: var(--display); font-weight: 600; font-size: 15px; letter-spacing: .02em; opacity: .9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.opts { max-width: 980px; margin: 8px auto 0; display: flex; gap: 8px; flex-wrap: wrap }
+.toggle { background: transparent; border: 1.5px solid rgba(255,255,255,.35); color: #fff; border-radius: 999px; padding: 6px 14px; font-size: 14px; min-height: 38px }
+.toggle[aria-pressed="true"] { background: #fff; color: #0C1422; border-color: #fff; font-weight: 700 }
+.speed { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.35); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 14px; min-height: 38px }
+.speed option { color: #121A2B }
+
+main { max-width: 980px; margin: 0 auto; padding-block: 22px 110px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+h1 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 4vw, 36px); line-height: 1.1; margin: 4px 0 6px; text-wrap: balance }
+.lead { color: var(--muted); margin: 0 0 20px; max-width: 62ch }
+.eyebrow { font-family: var(--display); font-weight: 600; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--red) }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px }
+.tile { text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 18px; min-height: 108px;
+  display: flex; flex-direction: column; gap: 6px; justify-content: space-between; transition: transform .12s, border-color .12s }
+.tile:hover:not(:disabled) { border-color: var(--red); transform: translateY(-2px) }
+.tile:disabled { opacity: .5; cursor: default }
+.tile .t { font-family: var(--display); font-weight: 800; font-size: 21px; line-height: 1.15 }
+.tile .s { color: var(--muted); font-size: 15px }
+.tile .n { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums }
+.tag { align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: var(--chip); color: var(--muted); padding: 3px 9px; border-radius: 999px }
+.tile.big { min-height: 150px; border-width: 2px }
+.tile.big .t { font-size: 26px }
+
+.cards { display: grid; gap: 14px }
+.card { background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 10px; min-width: 0 }
+.ask { background: var(--chip); border-radius: 10px; padding: 10px 12px }
+.ask .lbl, .ans-lbl { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.ask .q { font-weight: 700; font-size: 18px }
+.ask .qes { color: var(--es); font-size: 15px }
+.en { font-size: 22px; line-height: 1.4; font-weight: 700 }
+.es { color: var(--es); font-size: 16px; border-left: 3px solid var(--red); padding-left: 10px }
+.pron { font-size: 15px; color: var(--muted) }
+.pron b { color: var(--ink) }
+.actions { display: flex; gap: 8px; flex-wrap: wrap }
+.act { border: 1.5px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 14px; font-weight: 700; font-size: 15px; min-height: 44px }
+.act:hover { border-color: var(--red) }
+.act.play { background: var(--navy); color: #fff; border-color: var(--navy) }
+.hidden-en { filter: blur(7px); user-select: none; cursor: pointer }
+.reveal-hint { font-size: 13px; color: var(--muted) }
+.next { margin-top: 22px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap }
+.next .act { font-size: 16px; padding: 12px 18px }
+.swipe-hint { position: fixed; top: 50%; left: calc(8px + env(safe-area-inset-left, 0px)); transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%;
+  background: var(--navy); color: #fff; font-size: 28px; font-weight: 700; display: grid; place-items: center; opacity: 0; pointer-events: none; z-index: 20 }
+.pull-hint { position: fixed; left: 50%; top: calc(70px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); width: 44px; height: 44px; border-radius: 50%;
+  background: var(--red); color: #fff; font-size: 26px; font-weight: 700; display: grid; place-items: center; opacity: 0; pointer-events: none; z-index: 20 }
+.note { margin-top: 26px; color: var(--muted); font-size: 14px }
+
+/* Topic row under the bar */
+.chips { max-width: 980px; margin: 10px auto 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px }
+.chips::-webkit-scrollbar { display: none }
+.chip { flex: none; background: rgba(255,255,255,.1); border: 0; color: #fff; border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 700; min-height: 40px; white-space: nowrap }
+.chip[aria-current="true"] { background: #fff; color: #0C1422 }
+
+/* Floating "Temas" button and the topics panel */
+.fab { position: fixed; z-index: 15; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  background: var(--red); color: #fff; border: 0; border-radius: 999px; padding: 14px 22px; font-weight: 700; font-size: 17px; min-height: 56px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25) }
+.sheet { position: fixed; inset: 0; z-index: 30; background: rgba(8,12,20,.55); display: flex; justify-content: flex-end }
+.sheet-body { width: min(440px, 100%); height: 100%; background: var(--bg); overflow-y: auto; overscroll-behavior: contain;
+  padding-block: calc(14px + env(safe-area-inset-top, 0px)) calc(24px + env(safe-area-inset-bottom, 0px));
+  padding-left: 16px; padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.sheet-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px }
+.sheet-head h2 { flex: 1; margin: 0; font-family: var(--display); font-weight: 800; font-size: 24px }
+.close { background: var(--chip); border: 0; border-radius: 10px; padding: 10px 16px; font-weight: 700; min-height: 44px }
+.search { width: 100%; font: inherit; font-size: 17px; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); min-height: 50px }
+.search:focus { outline: 3px solid var(--red); outline-offset: 1px }
+.sheet h3 { font-family: var(--display); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--red); margin: 18px 0 8px }
+.tlist { display: grid; grid-template-columns: 1fr 1fr; gap: 8px }
+.tbtn { text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 12px; font-weight: 700; font-size: 15px; min-height: 48px }
+.tbtn[aria-current="true"] { border-color: var(--red); color: var(--red) }
+.hits { display: grid; gap: 8px; margin-top: 12px }
+.hit { text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 12px; display: grid; gap: 4px }
+.hit .where { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted) }
+.hit .txt { font-weight: 700 }
+.hit .sub { color: var(--es); font-size: 14px }
+.hit mark { background: #FFE08A; color: #121A2B; border-radius: 3px }
+.empty { color: var(--muted); margin-top: 14px }
+.qlist { grid-column: 1 / -1; display: grid; gap: 4px; border-left: 3px solid var(--red); padding: 4px 0 4px 10px; margin-bottom: 4px }
+.qbtn { text-align: left; background: transparent; border: 0; border-radius: 8px; padding: 8px 10px; font-size: 14px; line-height: 1.3; color: var(--ink); min-height: 40px }
+.qbtn:hover { background: var(--chip) }
+
+/* Assistant chat on the left (only where the page can ask Claude) */
+.fab-chat { position: fixed; z-index: 15; left: calc(16px + env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  background: var(--navy); color: #fff; border: 0; border-radius: 999px; padding: 14px 22px; font-weight: 700; font-size: 17px; min-height: 56px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25) }
+.chat { position: fixed; inset: 0; z-index: 30; background: rgba(8,12,20,.55); display: flex; justify-content: flex-start }
+.chat-body { width: min(420px, 100%); height: 100%; background: var(--bg); display: flex; flex-direction: column; border-right: 1.5px solid var(--line);
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px) }
+.chat-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1.5px solid var(--line) }
+.chat-head h2 { flex: 1; margin: 0; font-family: var(--display); font-weight: 800; font-size: 22px }
+.pin[aria-pressed="true"] { background: var(--navy); color: #fff }
+.msgs { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 14px; display: flex; flex-direction: column; gap: 12px }
+.msg-me { align-self: flex-end; max-width: 85%; background: var(--navy); color: #fff; border-radius: 14px 14px 4px 14px; padding: 10px 14px; font-size: 16px }
+.msg-bot { background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 8px }
+.msg-bot .qen { font-size: 14px; color: var(--muted) }
+.msg-bot .aen { font-size: 20px; font-weight: 700; line-height: 1.4 }
+.msg-bot.err { color: var(--muted) }
+.thinking { color: var(--muted); font-style: italic }
+.hello { color: var(--muted); font-size: 15px; display: grid; gap: 8px }
+.hello .ex { text-align: left; background: var(--chip); border: 0; border-radius: 10px; padding: 8px 12px; font-size: 15px; min-height: 40px }
+.composer { display: flex; gap: 8px; padding: 12px 14px; border-top: 1.5px solid var(--line); align-items: flex-end }
+.composer textarea { flex: 1; min-width: 0; resize: none; font: inherit; font-size: 17px; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--line);
+  background: var(--surface); color: var(--ink); min-height: 50px; max-height: 140px }
+.composer textarea:focus { outline: 3px solid var(--red); outline-offset: 1px }
+.send { background: var(--red); color: #fff; border: 0; border-radius: 12px; padding: 0 18px; font-weight: 700; min-height: 50px }
+.send.stop { background: var(--muted) }
+body.chatdock { padding-left: 400px }
+body.chatdock .chat { inset: 0 auto 0 0; width: 400px; background: transparent; z-index: 12 }
+body.chatdock .chat-body { width: 100% }
+
+/* Docked: the topics menu stays open on the right, the page uses the rest of the width */
+body.docked { padding-right: 340px }
+body.docked .sheet { inset: 0 0 0 auto; width: 340px; background: transparent; z-index: 12 }
+body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
+.card.flash { animation: flash 1.6s ease-out }
+@keyframes flash { 0%, 40% { border-color: var(--red); box-shadow: 0 0 0 4px rgba(192,18,42,.25) } 100% { border-color: var(--line); box-shadow: none } }
+@media (prefers-reduced-motion: reduce) { .tile { transition: none } .tile:hover:not(:disabled) { transform: none } .card.flash { animation: none; border-color: var(--red) } }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="bar-row">
+    <button class="navbtn" id="back" type="button">‹ Atrás</button>
+    <div class="crumb" id="crumb">Inicio</div>
+    <button class="navbtn" id="home" type="button">Inicio</button>
+  </div>
+  <div class="opts">
+    <button class="toggle" id="optEs" type="button" aria-pressed="true">Español</button>
+    <button class="toggle" id="optPractice" type="button" aria-pressed="false">Modo práctica</button>
+    <button class="toggle" id="optPron" type="button" aria-pressed="true">Pronunciación</button>
+    <select class="speed" id="speed" aria-label="Velocidad de la voz">
+      <option value="0.7">Voz lenta</option>
+      <option value="0.85" selected>Voz normal</option>
+      <option value="1">Voz rápida</option>
+    </select>
+  </div>
+  <nav class="chips" id="chips" aria-label="Temas del módulo" hidden></nav>
+</header>
+<main id="view"></main>
+<div class="swipe-hint" id="swipeHint" aria-hidden="true">‹</div>
+<div class="pull-hint" id="pullHint" aria-hidden="true">↻</div>
+<button class="fab" id="fab" type="button" aria-haspopup="dialog">☰ Temas</button>
+<button class="fab-chat" id="fabChat" type="button" aria-haspopup="dialog" hidden>💬 Asistente</button>
+<div class="chat" id="chat" role="dialog" aria-label="Asistente para responder" hidden>
+  <div class="chat-body">
+    <div class="chat-head">
+      <h2>Asistente</h2>
+      <button class="close pin" id="pinChat" type="button" aria-pressed="false" title="Dejarlo fijo a la izquierda">📌 Anclar</button>
+      <button class="close" id="closeChat" type="button" aria-label="Cerrar el asistente">✕</button>
+    </div>
+    <div class="msgs" id="msgs" aria-live="polite"></div>
+    <form class="composer" id="composer">
+      <textarea id="ask" rows="1" placeholder="Escribe la pregunta o el tema, en español o inglés" aria-label="Pregunta"></textarea>
+      <button class="send" id="send" type="submit">Enviar</button>
+    </form>
+  </div>
+</div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Temas y buscador" hidden>
+  <div class="sheet-body">
+    <div class="sheet-head"><h2>Temas</h2><button class="close" id="closeSheet" type="button">Cerrar</button></div>
+    <input class="search" id="q" type="search" placeholder="Buscar: Canny, deadline, GitHub…" autocomplete="off" aria-label="Buscar frases">
+    <div id="sheetList"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+(() => {
+  const S = window.SECTIONS || [];
+  const view = document.getElementById("view");
+  const crumb = document.getElementById("crumb");
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem("oh_" + k); return v === null ? d : JSON.parse(v) } catch (e) { return d } },
+    set(k, v) { try { localStorage.setItem("oh_" + k, JSON.stringify(v)) } catch (e) {} }
+  };
+  const opts = { es: store.get("es", true), practice: store.get("practice", false), pron: store.get("pron", true), speed: store.get("speed", "0.85") };
+  let stack = [];  // navigation history: [{v:'home'}, {v:'section', s}, {v:'topic', s, t}]
+  const tts = "speechSynthesis" in window;
+
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const pronHtml = p => esc(p).replace(/([^·(]+)\(([^)]+)\)/g, (m, w, r) => `<b>${w.trim()}</b> (${r})`);
+
+
+  // Spanish-style pronunciation for hard words (CAPITALS = strong syllable); shown when a phrase has no hand-written help.
+  const PRON = [["Pythagorean","pi-za-go-RÍ-an"],["convolutional","kon-vo-LÚ-sho-nal"],["convolution","kon-vo-LÚ-shon"],
+    ["thresholding","ZRÉSH-joul-ding"],["thresholds","ZRÉSH-joulds"],["threshold","ZRÉSH-jould"],["potholes","PÓT-jouls"],["pothole","PÓT-joul"],
+    ["pixels","PÍK-sels"],["pixel","PÍK-sel"],["kernels","KÉR-nels"],["kernel","KÉR-nel"],["Gaussian","GÁU-si-an"],["Laplacian","la-PLÉI-si-an"],
+    ["Sobel","SÓU-bel"],["Canny","KÁ-ni"],["Otsu","ÓT-su"],["histogram","JÍS-to-gram"],["derivative","de-RÍ-va-tiv"],["magnitude","MÁG-ni-tud"],
+    ["matrix","MÉI-triks"],["algorithm","ÁL-go-ri-dem"],["neural","NIÚ-ral"],["asphalt","ÁS-folt"],["gravel","GRÁ-vel"],
+    ["neighbors","NÉI-bors"],["average","Á-vrich"],["brightness","BRÁIT-nes"],["weight","UÉIT"],["height","JÁIT"],["width","UÍDZ"],
+    ["alpha","ÁL-fa"],["beta","BÉI-ta"],["uint8","iú-int-ÉIT"],["occlusion","o-KLÚ-shon"],["environment","en-VÁI-ron-ment"],
+    ["requirements","ri-KUÁIR-ments"],["repository","ri-PÓ-si-to-ri"],["specification","spe-si-fi-KÉI-shon"],["Jupyter","YÚ-pi-ter"],
+    ["PyTorch","PÁI-torch"],["NumPy","NÁM-pai"],["OpenCV","óu-pen-si-VÍ"],["GitHub","GUÍT-jab"],["Colab","KÓU-lab"],["Gx","yi-ÉKS"],["Gy","yi-UÁI"],
+    ["microphone","MÁI-kro-foun"],["headphones","JÉD-founs"],["echo","É-kou"],["frozen","FRÓU-sen"],["disconnected","dis-ko-NÉK-ted"],
+    ["screen","SKRÍN"],["through","ZRÚ"],["thirteen","zer-TÍN"],["assignment","a-SÁIN-ment"],["assignments","a-SÁIN-ments"],
+    ["collaborator","ko-LÁ-bo-rei-tor"],["annotation","a-no-TÉI-shon"],["dataset","DÉI-ta-set"],["YOLO","YÓU-lou"],["Gradio","GRÉI-dio"],
+    ["greyscale","GRÉI-skeil"],["grey","GRÉI"],["notebook","NÓUT-buk"],["terminal","TÉR-mi-nal"],["whole","JÓUL"],["module","MÓ-diul"]];
+  const pronCache = new Map();
+  function autoPron(en) {
+    if (!en) return "";
+    if (pronCache.has(en)) return pronCache.get(en);
+    const seen = new Set(), out = [];
+    for (const [w, p] of PRON) {
+      const base = w.toLowerCase().replace(/s$/, "");
+      if (seen.has(base)) continue;
+      if (new RegExp(`(^|[^\\w])${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\w])`, "i").test(en)) { out.push(`${w} (${p})`); seen.add(base) }
+      if (out.length >= 3) break;
+    }
+    const r = out.join(" · "); pronCache.set(en, r); return r;
+  }
+
+  function voice() {
+    if (!tts) return null;
+    const vs = speechSynthesis.getVoices();
+    return vs.find(v => v.lang === "en-US" && /Samantha|Google US|Aria|Jenny/i.test(v.name)) || vs.find(v => v.lang === "en-US") || vs.find(v => v.lang.startsWith("en")) || null;
+  }
+  function say(text, rate) {
+    if (!tts) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const v = voice(); if (v) u.voice = v;
+    u.lang = "en-US"; u.rate = rate || parseFloat(opts.speed);
+    speechSynthesis.speak(u);
+  }
+
+  // Each view is a browser history entry, so the browser's own back gesture and button work too.
+  function go(state) { stack.push(state); history.pushState({ depth: stack.length }, ""); render() }
+  function back() { if (stack.length > 1) history.back() }
+  window.addEventListener("popstate", e => {
+    const depth = (e.state && e.state.depth) || 1;
+    if (depth < stack.length) { stack.length = depth; render() }
+  });
+
+  // Swipe left to right anywhere on the screen goes back one view.
+  const hint = document.getElementById("swipeHint");
+  const SWIPE = 110;  // pixels of horizontal travel needed
+  let sw = null;
+  document.addEventListener("touchstart", e => {
+    const t = e.touches[0];
+    const scrollable = e.target.closest && e.target.closest(".chips, .sheet, .chat");  // these scroll sideways or have their own gestures
+    sw = (e.touches.length === 1 && stack.length > 1 && !scrollable) ? { x: t.clientX, y: t.clientY, dx: 0 } : null;
+  }, { passive: true });
+  document.addEventListener("touchmove", e => {
+    if (!sw) return;
+    const t = e.touches[0];
+    sw.dx = t.clientX - sw.x;
+    const dy = Math.abs(t.clientY - sw.y);
+    if (dy > 70 || (dy > 25 && dy > sw.dx)) { sw = null; hint.style.opacity = 0; return }  // a scroll, not a swipe
+    const p = Math.max(0, Math.min(1, sw.dx / SWIPE));
+    hint.style.opacity = p; hint.style.transform = `translateY(-50%) translateX(${p * 24}px)`;
+  }, { passive: true });
+  document.addEventListener("touchend", () => {
+    if (sw && sw.dx > SWIPE) back();
+    sw = null; hint.style.opacity = 0; hint.style.transform = "translateY(-50%)";
+  });
+
+  // Pull down from the top of the page to reload it.
+  const pull = document.getElementById("pullHint");
+  const PULL = 100;  // pixels to drag down
+  let pd = null;
+  document.addEventListener("touchstart", e => {
+    const inPanel = e.target.closest && e.target.closest(".sheet, .chat, .chips");
+    pd = (e.touches.length === 1 && window.scrollY <= 0 && !inPanel) ? { y: e.touches[0].clientY, x: e.touches[0].clientX, dy: 0 } : null;
+  }, { passive: true });
+  document.addEventListener("touchmove", e => {
+    if (!pd) return;
+    const t = e.touches[0];
+    pd.dy = t.clientY - pd.y;
+    if (pd.dy < 0 || window.scrollY > 0 || Math.abs(t.clientX - pd.x) > pd.dy) { pd = null; pull.style.opacity = 0; return }
+    const p = Math.min(1, pd.dy / PULL);
+    pull.style.opacity = p;
+    pull.style.transform = `translateX(-50%) translateY(${p * 40}px) rotate(${p * 270}deg)`;
+    pull.textContent = "↻";
+  }, { passive: true });
+  document.addEventListener("touchend", () => {
+    if (pd && pd.dy > PULL) { pull.style.opacity = 1; location.reload(); return }
+    pd = null; pull.style.opacity = 0; pull.style.transform = "translateX(-50%)";
+  });
+
+  function renderHome() {
+    crumb.textContent = "MAI 630 · Office Hours";
+    const main = S.filter(s => !s.soon && s.id !== "m1" && !/^m\d/.test(s.id));
+    const mods = S.filter(s => /^m\d/.test(s.id));
+    view.innerHTML = `
+      <div class="eyebrow">MAI 630 · Computer Vision</div>
+      <h1>Office Hours: qué decir en Zoom</h1>
+      <p class="lead">Respuestas en inglés sencillo para tus reuniones uno a uno: busca la situación, lee la frase y escúchala. Incluye problemas técnicos de Zoom y conversaciones completas.</p>
+      <div class="grid">${main.map(tile).join("")}</div>
+      <h2 class="eyebrow" style="margin:28px 0 12px">Módulos</h2>
+      <div class="grid">${mods.map(tile).join("")}</div>`;
+    view.querySelectorAll("[data-s]").forEach(b => b.onclick = () => go({ v: "section", s: b.dataset.s }));
+  }
+  function count(s) { return s.topics.reduce((a, t) => a + t.items.length, 0) }
+  function tile(s) {
+    return `<button class="tile big" type="button" data-s="${s.id}" ${s.soon ? "disabled" : ""}>
+      <span class="tag">${esc(s.tag)}</span>
+      <span class="t">${esc(s.title)}</span>
+      <span class="s">${esc(s.sub)}</span>
+      <span class="n">${s.soon ? "Lo preparamos después" : `${s.topics.length} temas · ${count(s)} frases`}</span></button>`;
+  }
+
+  function renderSection(sid) {
+    const s = S.find(x => x.id === sid);
+    crumb.textContent = s.title;
+    view.innerHTML = `
+      <div class="eyebrow">${esc(s.tag)}</div>
+      <h1>${esc(s.title)}</h1>
+      <p class="lead">${esc(s.sub)}. Elige un tema.</p>
+      <div class="grid">${s.topics.map((t, i) => `
+        <button class="tile" type="button" data-t="${t.id}">
+          <span class="t">${esc(t.title)}</span>
+          <span class="n">${t.items.length} ${t.items.length === 1 ? "frase" : "frases"}</span></button>`).join("")}</div>`;
+    view.querySelectorAll("[data-t]").forEach(b => b.onclick = () => go({ v: "topic", s: sid, t: b.dataset.t }));
+  }
+
+  function renderTopic(sid, tid) {
+    const s = S.find(x => x.id === sid);
+    const idx = s.topics.findIndex(x => x.id === tid);
+    const t = s.topics[idx];
+    crumb.textContent = `${s.title} › ${t.title}`;
+    view.innerHTML = `
+      <div class="eyebrow">${esc(s.title)}</div>
+      <h1>${esc(t.title)}</h1>
+      <div class="cards">${t.items.map((it, i) => card(it, i)).join("")}</div>
+      <div class="next">
+        ${idx > 0 ? `<button class="act" type="button" data-jump="${s.topics[idx - 1].id}">‹ ${esc(s.topics[idx - 1].title)}</button>` : "<span></span>"}
+        ${idx < s.topics.length - 1 ? `<button class="act play" type="button" data-jump="${s.topics[idx + 1].id}">${esc(s.topics[idx + 1].title)} ›</button>` : ""}
+      </div>
+      ${tts ? "" : `<p class="note">Este navegador no tiene voz en inglés disponible: el botón Escuchar no aparece.</p>`}`;
+    view.querySelectorAll("[data-jump]").forEach(b => b.onclick = () => { stack[stack.length - 1] = { v: "topic", s: sid, t: b.dataset.jump }; history.replaceState({ depth: stack.length }, ""); render() });
+    view.querySelectorAll("[data-say]").forEach(b => b.onclick = () => { const it = t.items[+b.dataset.say]; say(b.dataset.kind === "q" ? it.q : it.en, b.dataset.rate ? parseFloat(b.dataset.rate) : null) });
+    view.querySelectorAll(".hidden-en").forEach(el => el.onclick = () => { el.classList.remove("hidden-en"); const h = el.nextElementSibling; if (h && h.classList.contains("reveal-hint")) h.remove() });
+  }
+  function card(it, i) {
+    const ask = it.q ? `<div class="ask"><div class="lbl">El estudiante pregunta</div><div class="q">${esc(it.q)}</div>${opts.es && it.qes ? `<div class="qes">${esc(it.qes)}</div>` : ""}
+      ${tts ? `<div class="actions" style="margin-top:6px"><button class="act" type="button" data-say="${i}" data-kind="q">▶ Escuchar pregunta</button></div>` : ""}</div>`
+      : it.qes ? `<div class="ask"><div class="lbl">Situación</div><div class="q">${esc(it.qes)}</div></div>` : "";
+    const hide = opts.practice;
+    return `<article class="card">
+      ${ask}
+      ${it.q || it.qes ? `<div class="ans-lbl">Di esto</div>` : ""}
+      <div class="en ${hide ? "hidden-en" : ""}">${esc(it.en)}</div>
+      ${hide ? `<div class="reveal-hint">Di la frase en inglés y toca el texto para comprobar.</div>` : ""}
+      ${opts.pron && (it.pron || autoPron(it.en)) ? `<div class="pron">Pronunciación: ${pronHtml(it.pron || autoPron(it.en))}</div>` : ""}
+      ${opts.es && it.es ? `<div class="es">${esc(it.es)}</div>` : ""}
+      ${tts ? `<div class="actions"><button class="act play" type="button" data-say="${i}">▶ Escuchar</button><button class="act" type="button" data-say="${i}" data-rate="0.6">Muy lento</button></div>` : ""}
+    </article>`;
+  }
+
+  function render() {
+    if (tts) speechSynthesis.cancel();
+    const st = stack[stack.length - 1];
+    document.getElementById("back").disabled = stack.length < 2;
+    document.getElementById("back").style.visibility = stack.length < 2 ? "hidden" : "visible";
+    if (st.v === "home") renderHome();
+    else if (st.v === "section") renderSection(st.s);
+    else renderTopic(st.s, st.t);
+    renderChips(st);
+    if (!sheet.hidden) renderSheet();
+    window.scrollTo(0, 0);
+  }
+  function flashCard(i) {
+    const el = view.querySelectorAll(".card")[i];
+    if (el) { el.classList.remove("flash"); void el.offsetWidth; el.scrollIntoView({ block: "center" }); el.classList.add("flash") }
+  }
+
+  // Jump straight to any topic (from the panel or the search), keeping Atrás → section → home.
+  function jumpTo(sid, tid, item) {
+    if (!docked()) sheet.hidden = true;
+    const d = stack.length;
+    if (d === 1) { history.pushState({ depth: 2 }, ""); history.pushState({ depth: 3 }, "") }
+    else if (d === 2) history.pushState({ depth: 3 }, "");
+    else history.replaceState({ depth: 3 }, "");
+    stack = [{ v: "home" }, { v: "section", s: sid }, { v: "topic", s: sid, t: tid }];
+    render();
+    if (item != null) flashCard(item);
+  }
+
+  // Row of the module's topics under the bar, only inside a topic.
+  const chips = document.getElementById("chips");
+  function renderChips(st) {
+    if (st.v !== "topic") { chips.hidden = true; chips.innerHTML = ""; return }
+    const s = S.find(x => x.id === st.s);
+    chips.innerHTML = s.topics.map(t => `<button class="chip" type="button" data-chip="${t.id}" aria-current="${t.id === st.t}">${esc(t.title)}</button>`).join("");
+    chips.hidden = false;
+    chips.querySelectorAll("[data-chip]").forEach(b => b.onclick = () => {
+      stack[stack.length - 1] = { v: "topic", s: st.s, t: b.dataset.chip }; history.replaceState({ depth: stack.length }, ""); render();
+    });
+    const cur = chips.querySelector('[aria-current="true"]');
+    if (cur) chips.scrollLeft = cur.offsetLeft - chips.clientWidth / 2 + cur.offsetWidth / 2;
+  }
+
+  // Topics menu with search. On a wide screen it stays docked on the right until you minimise it.
+  const sheet = document.getElementById("sheet"), q = document.getElementById("q"), list = document.getElementById("sheetList");
+  const fab = document.getElementById("fab"), closeBtn = document.getElementById("closeSheet");
+  const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  const wide = () => window.innerWidth >= 700;
+  let dock = store.get("dock", true);
+  const docked = () => document.body.classList.contains("docked");
+  function applyDock() {
+    // With the assistant pinned on the left, the topics menu stays docked only on a very wide screen.
+    const on = dock && wide() && !(document.body.classList.contains("chatdock") && window.innerWidth < 1180);
+    document.body.classList.toggle("docked", on);
+    if (on) sheet.hidden = false;
+    else if (wide()) sheet.hidden = true;
+    sheet.setAttribute("aria-modal", String(!on));
+    fab.hidden = !sheet.hidden;
+    closeBtn.textContent = on ? "Minimizar ›" : "Cerrar";
+    if (!sheet.hidden) renderSheet();
+  }
+  function openSheet() {
+    if (wide()) { dock = true; store.set("dock", true); applyDock() }
+    else { sheet.hidden = false; fab.hidden = true; renderSheet() }
+  }
+  function closeSheet() {
+    if (docked()) { dock = false; store.set("dock", false); applyDock() }
+    else { sheet.hidden = true; fab.hidden = false }
+  }
+  function renderSheet() {
+    const term = norm(q.value.trim());
+    const cur = stack[stack.length - 1];
+    const isCur = (s, t) => cur.v === "topic" && cur.s === s.id && cur.t === t.id;
+    if (!term) {
+      list.innerHTML = S.filter(s => !s.soon).map(s => `<h3>${esc(s.title)}</h3><div class="tlist">${s.topics.map(t =>
+        `<button class="tbtn" type="button" data-go="${s.id}|${t.id}" aria-current="${isCur(s, t)}">${esc(t.title)}</button>` +
+        (isCur(s, t) ? `<div class="qlist">${t.items.map((it, i) => `<button class="qbtn" type="button" data-card="${i}">${esc(it.q || it.qes || it.en)}</button>`).join("")}</div>` : "")
+      ).join("")}</div>`).join("");
+      list.querySelectorAll("[data-card]").forEach(b => b.onclick = () => { if (!docked()) { sheet.hidden = true; fab.hidden = false } flashCard(+b.dataset.card) });
+      const curBtn = list.querySelector('.tbtn[aria-current="true"]');
+      if (curBtn) { const body = sheet.querySelector(".sheet-body"); body.scrollTop = Math.max(0, curBtn.offsetTop - 120) }
+    } else {
+      const hits = [];
+      S.filter(s => !s.soon).forEach(s => s.topics.forEach(t => t.items.forEach((it, i) => {
+        const hay = norm([it.en, it.es, it.q, it.qes, t.title].join(" "));
+        if (hay.includes(term)) hits.push({ s, t, it, i });
+      })));
+      const mark = txt => { const n = norm(txt), k = n.indexOf(term); return k < 0 ? esc(txt) : esc(txt.slice(0, k)) + "<mark>" + esc(txt.slice(k, k + term.length)) + "</mark>" + esc(txt.slice(k + term.length)) };
+      list.innerHTML = hits.length ? `<div class="hits">${hits.slice(0, 40).map(h => `
+        <button class="hit" type="button" data-go="${h.s.id}|${h.t.id}|${h.i}">
+          <span class="where">${esc(h.s.title)} › ${esc(h.t.title)}</span>
+          ${h.it.q || h.it.qes ? `<span class="sub">${mark(h.it.q || h.it.qes)}</span>` : ""}
+          <span class="txt">${mark(h.it.en)}</span>
+          ${opts.es && h.it.es ? `<span class="sub">${mark(h.it.es)}</span>` : ""}
+        </button>`).join("")}</div>${hits.length > 40 ? `<p class="empty">Mostrando 40 de ${hits.length}. Escribe algo más específico.</p>` : ""}`
+        : `<p class="empty">No hay frases con «${esc(q.value.trim())}». Prueba otra palabra, en inglés o en español.</p>`;
+    }
+    list.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { const [sid, tid, i] = b.dataset.go.split("|"); jumpTo(sid, tid, i === undefined ? null : +i) });
+  }
+  fab.onclick = openSheet;
+  closeBtn.onclick = closeSheet;
+  sheet.addEventListener("click", e => { if (e.target === sheet && !docked()) closeSheet() });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !sheet.hidden && !docked()) closeSheet() });
+  q.addEventListener("input", renderSheet);
+  window.addEventListener("resize", () => { applyChat(); applyDock() });
+
+  // Assistant: asks Claude with the whole course context. Only shown where the page can reach Claude.
+  const chat = document.getElementById("chat"), fabChat = document.getElementById("fabChat"), pinBtn = document.getElementById("pinChat");
+  const msgs = document.getElementById("msgs"), askBox = document.getElementById("ask"), sendBtn = document.getElementById("send");
+  let sampleFn = null, chatOpen = false, pinned = store.get("chatPinned", false), ctl = null, lastQ = "";
+  const RULES = `You help Professor Kevin García answer his students live, in a Zoom meeting of the course MAI 630 Computer Vision. He will read your answer aloud. His English is basic.
+The input can be in Spanish or English. It can be a student's question, or only a topic.
+Rules:
+- answer_en is the EXACT speech the professor will say out loud, word for word, to the student. Write it as spoken words in first person ("I", "you"), talking directly to the student, ready to read with no changes. No headings, no lists, no markdown, no quotes, no stage directions, no notes for the professor.
+- It may start with a short natural opener ("Good question.", "Sure.", "Okay.") and then the answer.
+- 2 to 4 short sentences. English level A2: common words, at most 12 words per sentence, no idioms. Use a technical word (kernel, threshold, commit) only when it is needed.
+- Be concise. Answer only what was asked.
+- Use the course context below as the truth for dates, files, rules, commands and numbers. If the answer is not in the context, give a short safe answer and add: "I will check and answer you in the forum."
+- Never write a student's assignment sentences or interpretations for them. You may explain the idea.
+- question_en: the student's question in simple English (translate it if it is in Spanish).
+- answer_es: the same speech in natural Spanish, so the professor understands what he will say.
+- pron: the hard English words of answer_en with Spanish-style pronunciation, stressed syllable in CAPITALS, separated by " · ", like "threshold (ZRÉSH-jould) · kernel (KÉR-nel)". Empty string if there are none.
+Reply with only this JSON: {"question_en": "...", "answer_en": "...", "answer_es": "...", "pron": "..."}
+
+COURSE CONTEXT:
+`;
+  const ERR = {
+    not_granted: "No diste permiso para usar Claude en esta página. Vuelve a abrirla para que lo pregunte otra vez.",
+    rate_limited: "Demasiadas preguntas seguidas o llegaste a tu límite de uso. Espera un momento y vuelve a intentar.",
+    session_expired: "Tu sesión de Claude expiró. Vuelve a iniciar sesión y recarga la página.",
+    invalid_json: "La respuesta llegó incompleta. Toca Enviar otra vez.",
+    refused: "Claude no respondió esa pregunta. Escríbela de otra forma.",
+  };
+  function hello() {
+    const ex = ["¿Cuándo vencen las tareas?", "Student asks how to share the repository", "Canny thresholds", "Mi instalación se congeló"];
+    msgs.innerHTML = `<div class="hello"><div>Escribe lo que pregunta el estudiante, o solo el tema, en español o en inglés. Te respondo en inglés sencillo, con la traducción.</div>
+      ${ex.map(e => `<button class="ex" type="button">${esc(e)}</button>`).join("")}</div>`;
+    msgs.querySelectorAll(".ex").forEach(b => b.onclick = () => { askBox.value = b.textContent; ask() });
+  }
+  function applyChat() {
+    const dockIt = chatOpen && pinned && wide();
+    document.body.classList.toggle("chatdock", dockIt);
+    chat.hidden = !chatOpen;
+    fabChat.hidden = !sampleFn || chatOpen;
+    pinBtn.setAttribute("aria-pressed", String(pinned));
+    pinBtn.textContent = pinned ? "📌 Anclado" : "📌 Anclar";
+    pinBtn.hidden = !wide();
+  }
+  function openChat() { chatOpen = true; applyChat(); applyDock(); if (!msgs.children.length) hello() }
+  function closeChat() { chatOpen = false; if (ctl) ctl.abort(); applyChat(); applyDock() }
+  fabChat.onclick = openChat;
+  document.getElementById("closeChat").onclick = closeChat;
+  pinBtn.onclick = () => { pinned = !pinned; store.set("chatPinned", pinned); applyChat(); applyDock() };
+  chat.addEventListener("click", e => { if (e.target === chat && !document.body.classList.contains("chatdock")) closeChat() });
+  askBox.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ask() } });
+  document.getElementById("composer").addEventListener("submit", e => { e.preventDefault(); if (ctl) ctl.abort(); else ask() });
+
+  async function ask() {
+    const text = askBox.value.trim();
+    if (!text || !sampleFn || ctl) return;
+    if (msgs.querySelector(".hello")) msgs.innerHTML = "";
+    askBox.value = "";
+    const me = document.createElement("div"); me.className = "msg-me"; me.textContent = text; msgs.append(me);
+    const bot = document.createElement("div"); bot.className = "msg-bot"; bot.innerHTML = `<div class="thinking">Pensando…</div>`; msgs.append(bot);
+    msgs.scrollTop = msgs.scrollHeight;
+    ctl = new AbortController(); sendBtn.textContent = "Parar"; sendBtn.classList.add("stop");
+    const prompt = RULES + (window.COURSE_CONTEXT || "") + (lastQ ? `\n\nPrevious question in this meeting: ${lastQ}` : "") + `\n\nINPUT FROM THE PROFESSOR:\n${text}`;
+    try {
+      const r = await sampleFn.json(prompt, { modelTier: "quick", signal: ctl.signal });
+      const it = { q: String(r.question_en || ""), en: String(r.answer_en || ""), es: String(r.answer_es || ""), pron: String(r.pron || "") };
+      lastQ = it.q || text;
+      bot.innerHTML = `${it.q ? `<div class="qen">Pregunta: ${esc(it.q)}</div>` : ""}<div class="ans-lbl">Di esto</div><div class="aen">${esc(it.en)}</div>
+        ${opts.pron && it.pron ? `<div class="pron">Pronunciación: ${pronHtml(it.pron)}</div>` : ""}
+        ${opts.es && it.es ? `<div class="es">${esc(it.es)}</div>` : ""}
+        ${tts ? `<div class="actions"><button class="act play" type="button" data-n="1">▶ Escuchar</button><button class="act" type="button" data-n="0.6">Muy lento</button></div>` : ""}`;
+      bot.querySelectorAll("[data-n]").forEach(b => b.onclick = () => say(it.en, parseFloat(b.dataset.n) === 1 ? null : 0.6));
+    } catch (e) {
+      bot.classList.add("err");
+      bot.textContent = e && e.code === "cancelled" ? "Cancelado." : (ERR[e && e.code] || "No se pudo responder ahora. Toca Enviar otra vez.");
+      if (e && (e.code === "not_granted" || e.code === "sampling_disabled")) { sampleFn = null; fabChat.hidden = true }
+    } finally {
+      ctl = null; sendBtn.textContent = "Enviar"; sendBtn.classList.remove("stop");
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+  }
+  if (window.claude && typeof window.claude.use === "function") {
+    window.claude.use("sample").then(fn => { sampleFn = fn; applyChat() }).catch(() => {});
+  }
+
+  function bindToggle(id, key) {
+    const b = document.getElementById(id);
+    b.setAttribute("aria-pressed", String(opts[key]));
+    b.onclick = () => { opts[key] = !opts[key]; store.set(key, opts[key]); b.setAttribute("aria-pressed", String(opts[key])); render() };
+  }
+  bindToggle("optEs", "es"); bindToggle("optPractice", "practice"); bindToggle("optPron", "pron");
+  const sp = document.getElementById("speed"); sp.value = opts.speed;
+  sp.onchange = () => { opts.speed = sp.value; store.set("speed", sp.value) };
+  document.getElementById("back").onclick = back;
+  document.getElementById("home").onclick = () => { if (stack.length > 1) history.go(1 - stack.length) };
+  if (tts) speechSynthesis.onvoiceschanged = () => {};
+
+  // Optional deep link: #m1 or #m1-canny
+  stack = [{ v: "home" }];
+  const h = (location.hash || "").slice(1);
+  history.replaceState({ depth: 1 }, "", location.pathname);
+  if (h) {
+    const [sid, tid] = h.split("-");
+    const s = S.find(x => x.id === sid && !x.soon);
+    if (s) {
+      stack.push({ v: "section", s: sid }); history.pushState({ depth: 2 }, "");
+      if (tid && s.topics.some(t => t.id === tid)) { stack.push({ v: "topic", s: sid, t: tid }); history.pushState({ depth: 3 }, "") }
+    }
+  }
+  applyDock();
+  render();
+})();
+</script>
+</body>
+</html>
