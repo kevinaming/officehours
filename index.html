@@ -137,7 +137,7 @@ h1 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 4vw, 
 .hello { color: var(--muted); font-size: 15px; display: grid; gap: 8px }
 .hello .ex { text-align: left; background: var(--chip); border: 0; border-radius: 10px; padding: 8px 12px; font-size: 15px; min-height: 40px }
 .composer { display: flex; gap: 8px; padding: 12px 14px; border-top: 1.5px solid var(--line); align-items: flex-end }
-.composer textarea { flex: 1; min-width: 0; resize: none; font: inherit; font-size: 17px; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--line);
+.composer textarea { flex: 1; min-width: 0; resize: none; line-height: 1.35; overflow-y: auto; font: inherit; font-size: 17px; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--line);
   background: var(--surface); color: var(--ink); min-height: 50px; max-height: 140px }
 .composer textarea:focus { outline: 3px solid var(--red); outline-offset: 1px }
 .send { background: var(--red); color: #fff; border: 0; border-radius: 12px; padding: 0 18px; font-weight: 700; min-height: 50px }
@@ -188,7 +188,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     </div>
     <div class="msgs" id="msgs" aria-live="polite"></div>
     <form class="composer" id="composer">
-      <textarea id="ask" rows="1" placeholder="Escribe la pregunta o el tema, en español o inglés" aria-label="Pregunta"></textarea>
+      <textarea id="ask" rows="1" placeholder="Pregunta o tema…" aria-label="Pregunta"></textarea>
       <button class="send" id="send" type="submit">Enviar</button>
     </form>
   </div>
@@ -539,6 +539,9 @@ COURSE CONTEXT:
   document.getElementById("closeChat").onclick = closeChat;
   pinBtn.onclick = () => { pinned = !pinned; store.set("chatPinned", pinned); applyChat(); applyDock() };
   chat.addEventListener("click", e => { if (e.target === chat && !document.body.classList.contains("chatdock")) closeChat() });
+  // The box grows with the text, up to its max height.
+  const fit = () => { askBox.style.height = "auto"; askBox.style.height = Math.min(askBox.scrollHeight + 3, 140) + "px" };
+  askBox.addEventListener("input", fit);
   askBox.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ask() } });
   document.getElementById("composer").addEventListener("submit", e => { e.preventDefault(); if (ctl) ctl.abort(); else ask() });
 
@@ -546,7 +549,7 @@ COURSE CONTEXT:
     const text = askBox.value.trim();
     if (!text || !sampleFn || ctl) return;
     if (msgs.querySelector(".hello")) msgs.innerHTML = "";
-    askBox.value = "";
+    askBox.value = ""; fit();
     const me = document.createElement("div"); me.className = "msg-me"; me.textContent = text; msgs.append(me);
     const bot = document.createElement("div"); bot.className = "msg-bot"; bot.innerHTML = `<div class="thinking">Pensando…</div>`; msgs.append(bot);
     msgs.scrollTop = msgs.scrollHeight;
