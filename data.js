@@ -277,6 +277,10 @@ window.SECTIONS = [
       "es": "Ya casi se nos acaba el tiempo. ¿Hay una última pregunta?"
      },
      {
+      "en": "Okay, we're out of time, and I have to go now. Thanks for joining. See you next Monday in class!",
+      "es": "Bueno, se nos acabó el tiempo y tengo que desconectarme. Gracias por unirte. ¡Nos vemos el próximo lunes en clase!"
+     },
+     {
       "en": "Remember, both assignments are due on Sunday at 11:59 PM.",
       "es": "Recuerden, las dos tareas cierran el domingo a las 11:59 PM."
      },
