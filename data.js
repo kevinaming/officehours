@@ -11,8 +11,8 @@ window.SECTIONS = [
     "title": "Abrir la reunión",
     "items": [
      {
-      "en": "Good afternoon, everyone. Welcome to our weekly meeting for MAI 630, Computer Vision.",
-      "es": "Buenas tardes a todos. Bienvenidos a nuestra reunión semanal de MAI 630, Computer Vision."
+      "en": "Good afternoon, everyone. Welcome to our weekly meeting for the Computer Vision class.",
+      "es": "Buenas tardes a todos. Bienvenidos a nuestra reunión semanal de la clase de Computer Vision."
      },
      {
       "en": "Thank you for being here. I will wait one or two more minutes for others to join.",
