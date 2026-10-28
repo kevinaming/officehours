@@ -15,7 +15,7 @@ window.SECTIONS = [
       "es": "Buenas tardes a todos. Bienvenidos a nuestra reunión semanal de la clase de Computer Vision."
      },
      {
-      "en": "Thank you for being here. I will wait one or two more minutes for others to join.",
+      "en": "Thank you for being here. I'll wait one or two more minutes for others to join.",
       "es": "Gracias por estar aquí. Espero uno o dos minutos más a que entren los demás."
      },
      {
@@ -66,7 +66,7 @@ window.SECTIONS = [
      },
      {
       "qes": "Si todavía no empezó",
-      "en": "That is okay. Let’s start with the first step."
+      "en": "That's okay. Let’s start with the first step."
      },
      {
       "qes": "Si trae varias preguntas",
@@ -74,11 +74,11 @@ window.SECTIONS = [
      },
      {
       "qes": "Si no tiene preguntas",
-      "en": "That is fine. Are your assignments going well?"
+      "en": "That's fine. Are your assignments going well?"
      },
      {
       "qes": "Pedir que explique el problema",
-      "en": "Can you show me what is happening?"
+      "en": "Can you show me what's happening?"
      },
      {
       "qes": "Pedir información específica",
@@ -94,7 +94,7 @@ window.SECTIONS = [
      },
      {
       "qes": "Si necesita hablar más despacio",
-      "en": "Sure. I will speak more slowly."
+      "en": "Sure. I'll speak more slowly."
      }
     ]
    },
@@ -153,7 +153,7 @@ window.SECTIONS = [
       "es": "También uso el asistente de IA de Zoom para ayudarme con las notas y llevar control de sus preguntas."
      },
      {
-      "en": "If you do not want to be in the video, turn off your camera. You can write in the chat.",
+      "en": "If you don't want to be in the video, turn off your camera. You can write in the chat.",
       "es": "Si no quieren salir en la grabación, pueden apagar su cámara y usar el chat."
      }
     ]
@@ -163,19 +163,19 @@ window.SECTIONS = [
     "title": "Presentarme",
     "items": [
      {
-      "en": "My name is Kevin García, and I am your professor for this course.",
+      "en": "My name is Kevin García, and I'm your professor for this course.",
       "es": "Mi nombre es Kevin García y soy su profesor en este curso."
      },
      {
-      "en": "In this course, you will each build your own object detector. We go step by step.",
+      "en": "In this course, you'll each build your own object detector. We go step by step.",
       "es": "En este curso, cada uno de ustedes va a construir su propio detector de objetos, paso a paso."
      },
      {
-      "en": "English is not my first language. If something is not clear, please tell me.",
+      "en": "English isn't my first language. If something isn't clear, please tell me.",
       "es": "El inglés no es mi primer idioma, así que si digo algo que no se entiende, por favor díganme."
      },
      {
-      "en": "I will speak slowly, and I will write important things in the chat.",
+      "en": "I'll speak slowly, and I'll write important things in the chat.",
       "es": "Voy a hablar despacio y voy a escribir lo importante en el chat."
      }
     ]
@@ -273,7 +273,7 @@ window.SECTIONS = [
     "title": "Cerrar la reunión",
     "items": [
      {
-      "en": "We are almost out of time. Is there one last question?",
+      "en": "We're almost out of time. Is there one last question?",
       "es": "Ya casi se nos acaba el tiempo. ¿Hay una última pregunta?"
      },
      {
@@ -299,7 +299,7 @@ window.SECTIONS = [
       "es": "Gracias por venir. ¡Que tengas un excelente día!"
      },
      {
-      "en": "You are welcome. I am happy to help.",
+      "en": "You're welcome. I'm happy to help.",
       "es": "De nada. Me alegra ayudarte."
      },
      {
@@ -311,7 +311,7 @@ window.SECTIONS = [
       "es": "Antes de que te vayas, ¿tienes alguna otra pregunta?"
      },
      {
-      "en": "Good work today. You are on the right track.",
+      "en": "Good work today. You're on the right track.",
       "es": "Buen trabajo hoy. Vas por buen camino."
      },
      {
@@ -361,15 +361,15 @@ window.SECTIONS = [
       "es": "Perdón, tenía el micrófono apagado. ¿Puedes repetir tu pregunta, por favor?"
      },
      {
-      "en": "Sorry, my microphone was off. I am here now.",
+      "en": "Sorry, my microphone was off. I'm here now.",
       "es": "Perdón, mi micrófono estaba apagado. Ya estoy aquí."
      },
      {
-      "en": "Sorry, I did not hear you. Can you say it again?",
+      "en": "Sorry, I didn't hear you. Can you say it again?",
       "es": "Perdón, no te escuché. ¿Puedes decirlo otra vez?"
      },
      {
-      "en": "Sorry for the wait. I am back now. How can I help you?",
+      "en": "Sorry for the wait. I'm back now. How can I help you?",
       "es": "Perdón por la espera. Ya volví. ¿En qué te ayudo?"
      },
      {
@@ -387,7 +387,7 @@ window.SECTIONS = [
     "title": "Me desconecté",
     "items": [
      {
-      "en": "Sorry, my internet stopped for a moment. I am back now.",
+      "en": "Sorry, my internet stopped for a moment. I'm back now.",
       "es": "Perdón, mi internet se cortó un momento. Ya volví."
      },
      {
@@ -407,7 +407,7 @@ window.SECTIONS = [
       "es": "Si me desconecto otra vez, por favor escribe tu pregunta en el chat."
      },
      {
-      "en": "If I do not come back in five minutes, please post your question in the forum.",
+      "en": "If I don't come back in five minutes, please post your question in the forum.",
       "es": "Si no vuelvo en cinco minutos, por favor publica tu pregunta en el foro."
      }
     ]
@@ -429,11 +429,11 @@ window.SECTIONS = [
       "es": "Creo que mi micrófono tiene un problema. Dame un minuto."
      },
      {
-      "en": "I will change my microphone. Please wait a moment.",
+      "en": "I'll change my microphone. Please wait a moment.",
       "es": "Voy a cambiar el micrófono. Espera un momento, por favor."
      },
      {
-      "en": "If you cannot hear me, I will write in the chat.",
+      "en": "If you can't hear me, I'll write in the chat.",
       "es": "Si no me escuchas, voy a escribir en el chat."
      },
      {
@@ -447,11 +447,11 @@ window.SECTIONS = [
     "title": "No escucho al estudiante",
     "items": [
      {
-      "en": "I cannot hear you. Please check your microphone.",
+      "en": "I can't hear you. Please check your microphone.",
       "es": "No te escucho. Por favor revisa tu micrófono."
      },
      {
-      "en": "I think you are on mute. Please click Unmute at the bottom left.",
+      "en": "I think you're on mute. Please click Unmute at the bottom left.",
       "es": "Creo que estás en silencio. Haz clic en Unmute abajo a la izquierda."
      },
      {
@@ -459,7 +459,7 @@ window.SECTIONS = [
       "es": "¿Puedes hablar un poco más alto?"
      },
      {
-      "en": "Your audio is not clear. Please try again.",
+      "en": "Your audio isn't clear. Please try again.",
       "es": "Tu audio no se escucha claro. Intenta otra vez, por favor."
      },
      {
@@ -467,11 +467,11 @@ window.SECTIONS = [
       "es": "Tu voz se corta. ¿Puedes decirlo otra vez, despacio?"
      },
      {
-      "en": "There is an echo. Can you use headphones?",
+      "en": "There's an echo. Can you use headphones?",
       "es": "Hay eco. ¿Puedes usar audífonos?"
      },
      {
-      "en": "There is some noise. Can you mute when you are not talking?",
+      "en": "There's some noise. Can you mute when you aren't talking?",
       "es": "Hay algo de ruido. ¿Puedes silenciarte cuando no hables?"
      },
      {
@@ -493,7 +493,7 @@ window.SECTIONS = [
       "es": "Tu internet se ve lento. Intenta apagar tu cámara."
      },
      {
-      "en": "My internet is slow today. I will turn off my camera.",
+      "en": "My internet is slow today. I'll turn off my camera.",
       "es": "Mi internet está lento hoy. Voy a apagar mi cámara."
      },
      {
@@ -505,7 +505,7 @@ window.SECTIONS = [
       "es": "La conexión está mala. Por favor sal y vuelve a entrar a la reunión."
      },
      {
-      "en": "If it does not get better, we can continue in the forum.",
+      "en": "If it doesn't get better, we can continue in the forum.",
       "es": "Si no mejora, podemos seguir en el foro."
      }
     ]
@@ -515,19 +515,19 @@ window.SECTIONS = [
     "title": "Cámara y video",
     "items": [
      {
-      "en": "I cannot see your video. That is okay, we can talk with audio.",
+      "en": "I can't see your video. That's okay, we can talk with audio.",
       "es": "No veo tu video. Está bien, podemos hablar solo con audio."
      },
      {
-      "en": "You do not need your camera on. Audio is fine.",
+      "en": "You don't need your camera on. Audio is fine.",
       "es": "No necesitas la cámara encendida. Con audio basta."
      },
      {
-      "en": "My camera is not working right now. Sorry about that.",
+      "en": "My camera isn't working right now. Sorry about that.",
       "es": "Mi cámara no funciona ahora. Disculpa."
      },
      {
-      "en": "Your video is very dark. That is okay.",
+      "en": "Your video is very dark. That's okay.",
       "es": "Tu video se ve muy oscuro. Está bien."
      }
     ]
@@ -561,7 +561,7 @@ window.SECTIONS = [
       "es": "Mira aquí. Este es el paso que necesitas."
      },
      {
-      "en": "I will stop sharing now.",
+      "en": "I'll stop sharing now.",
       "es": "Voy a dejar de compartir ahora."
      }
     ]
@@ -583,7 +583,7 @@ window.SECTIONS = [
       "es": "Sí, ya veo tu pantalla."
      },
      {
-      "en": "I cannot see your screen yet. Please try again.",
+      "en": "I can't see your screen yet. Please try again.",
       "es": "Todavía no veo tu pantalla. Intenta otra vez, por favor."
      },
      {
@@ -617,7 +617,7 @@ window.SECTIONS = [
       "es": "Bienvenido. Te dejé entrar desde la sala de espera."
      },
      {
-      "en": "Zoom closed on my computer. Sorry, I am back.",
+      "en": "Zoom closed on my computer. Sorry, I'm back.",
       "es": "Zoom se cerró en mi computadora. Perdón, ya volví."
      },
      {
@@ -629,7 +629,7 @@ window.SECTIONS = [
       "es": "Esta reunión se graba. ¿Está bien para ti?"
      },
      {
-      "en": "I will send the link in the chat.",
+      "en": "I'll send the link in the chat.",
       "es": "Voy a mandar el enlace en el chat."
      },
      {
@@ -643,11 +643,11 @@ window.SECTIONS = [
     "title": "Si no se puede seguir",
     "items": [
      {
-      "en": "The connection is not good today. Let's continue in the forum.",
+      "en": "The connection isn't good today. Let's continue in the forum.",
       "es": "La conexión no está bien hoy. Sigamos en el foro."
      },
      {
-      "en": "Please post your question in the forum. I will answer within 48 hours.",
+      "en": "Please post your question in the forum. I'll answer within 48 hours.",
       "es": "Por favor publica tu pregunta en el foro. Respondo en menos de 48 horas."
      },
      {
@@ -689,11 +689,11 @@ window.SECTIONS = [
       "es": "¿Puedes escribir tu pregunta en el chat? Así la puedo responder bien."
      },
      {
-      "en": "Your audio is not very clear. Could you try again?",
+      "en": "Your audio isn't very clear. Could you try again?",
       "es": "Tu audio no se escucha muy claro. ¿Puedes intentar otra vez?"
      },
      {
-      "en": "Let me make sure I understand. You are asking about…",
+      "en": "Let me make sure I understand. You're asking about…",
       "es": "Déjame asegurarme de que entiendo. Me preguntas sobre…"
      },
      {
@@ -707,11 +707,11 @@ window.SECTIONS = [
     "title": "Ganar tiempo",
     "items": [
      {
-      "en": "That is a good question. Let me think for a second.",
+      "en": "That's a good question. Let me think for a second.",
       "es": "Buena pregunta. Déjame pensar un segundo."
      },
      {
-      "en": "Give me one moment, I will check that.",
+      "en": "Give me one moment, I'll check that.",
       "es": "Dame un momento, lo reviso."
      },
      {
@@ -741,7 +741,7 @@ window.SECTIONS = [
       "es": "¿Alguna otra pregunta sobre este tema?"
      },
      {
-      "en": "If it is still not clear, tell me. I will explain it again in a different way.",
+      "en": "If it's still not clear, tell me. I'll explain it again in a different way.",
       "es": "Si todavía no está claro, díganme y lo explico de otra forma."
      }
     ]
@@ -751,15 +751,15 @@ window.SECTIONS = [
     "title": "Lo reviso y te respondo",
     "items": [
      {
-      "en": "I am not sure right now. I will check and answer you in the forum.",
+      "en": "I'm not sure right now. I'll check and answer you in the forum.",
       "es": "No estoy seguro ahora mismo. Lo reviso y te respondo en el foro."
      },
      {
-      "en": "Let me confirm that, and I will send you the answer after the meeting.",
+      "en": "Let me confirm that, and I'll send you the answer after the meeting.",
       "es": "Déjame confirmarlo y te mando la respuesta después de la reunión."
      },
      {
-      "en": "That is a specific case. Can you send me a screenshot of the error in the forum?",
+      "en": "That's a specific case. Can you send me a screenshot of the error in the forum?",
       "es": "Ese es un caso específico. ¿Me mandas una captura del error en el foro?"
      },
      {
@@ -774,7 +774,7 @@ window.SECTIONS = [
     "title": "Problemas en Zoom",
     "items": [
      {
-      "en": "I think you are muted. Please turn on your microphone.",
+      "en": "I think you're muted. Please turn on your microphone.",
       "es": "Creo que estás en silencio. Por favor activa tu micrófono."
      },
      {
@@ -782,7 +782,7 @@ window.SECTIONS = [
       "es": "¿Ya ven mi pantalla?"
      },
      {
-      "en": "I will share my screen to show you.",
+      "en": "I'll share my screen to show you.",
       "es": "Voy a compartir mi pantalla para mostrarles."
      },
      {
@@ -800,19 +800,19 @@ window.SECTIONS = [
     "title": "Animar y felicitar",
     "items": [
      {
-      "en": "Great question. I am sure other students have the same question.",
+      "en": "Great question. I'm sure other students have the same question.",
       "es": "Excelente pregunta. Seguro otros estudiantes tienen la misma duda."
      },
      {
-      "en": "Very good. That is exactly the idea.",
+      "en": "Very good. That's exactly the idea.",
       "es": "Muy bien. Esa es exactamente la idea."
      },
      {
-      "en": "Don't worry. This error is very common, and it is easy to fix.",
+      "en": "Don't worry. This error is very common, and it's easy to fix.",
       "es": "No te preocupes. Este error es muy común y es fácil de arreglar."
      },
      {
-      "en": "You are on the right track. Keep going.",
+      "en": "You're on the right track. Keep going.",
       "es": "Vas por buen camino. Sigue así."
      }
     ]
@@ -822,11 +822,11 @@ window.SECTIONS = [
     "title": "Redirigir",
     "items": [
      {
-      "en": "That topic is for Module 2, so we will see it next week.",
+      "en": "That topic is for Module 2, so we'll see it next week.",
       "es": "Ese tema es del Módulo 2, así que lo vemos la próxima semana."
      },
      {
-      "en": "That is a great idea, but it is not required for this assignment.",
+      "en": "That's a great idea, but it's not required for this assignment.",
       "es": "Es una gran idea, pero no es necesaria para esta tarea."
      },
      {
@@ -948,7 +948,7 @@ window.SECTIONS = [
     "title": "No entiende por qué Canny no detecta su objeto",
     "items": [
      {
-      "en": "Canny finds changes in brightness. It does not know your object."
+      "en": "Canny finds changes in brightness. It doesn't know your object."
      },
      {
       "en": "Low thresholds show more edges and more noise."
@@ -993,7 +993,7 @@ window.SECTIONS = [
     "title": "El estudiante tiene dudas sobre asistencia",
     "items": [
      {
-      "en": "You do not need to join Zoom for attendance."
+      "en": "You don't need to join Zoom for attendance."
      },
      {
       "en": "The live meeting is optional."
@@ -1011,7 +1011,7 @@ window.SECTIONS = [
     "title": "Un estudiante se siente perdido con los conceptos",
     "items": [
      {
-      "en": "That is okay. We start with simple ideas."
+      "en": "That's okay. We start with simple ideas."
      },
      {
       "en": "An image is a table of numbers."
@@ -1045,7 +1045,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué construiré al final?",
-      "en": "You will build your own object detector. It will find your chosen object in images."
+      "en": "You'll build your own object detector. It'll find your chosen object in images."
      },
      {
       "qes": "¿Es obligatorio detectar baches?",
@@ -1089,11 +1089,11 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué significa 0.89?",
-      "en": "It is the confidence score shown by the model. We will study scores in Module 3."
+      "en": "It's the confidence score shown by the model. We'll study scores in Module 3."
      },
      {
       "qes": "¿El detector funciona siempre?",
-      "en": "No. It can miss objects or make mistakes. We will measure that later."
+      "en": "No. It can miss objects or make mistakes. We'll measure that later."
      },
      {
       "qes": "¿Debo entrenar YOLO esta semana?",
@@ -1127,7 +1127,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué pasa si no entrego?",
-      "en": "If you do not submit the weekly work, you are marked absent for that week."
+      "en": "If you don't submit the weekly work, you're marked absent for that week."
      },
      {
       "qes": "¿Puedo entregar tarde?",
@@ -1139,7 +1139,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Puedo entregar por correo?",
-      "en": "No. I cannot accept assignments by email. Please use Moodle."
+      "en": "No. I can't accept assignments by email. Please use Moodle."
      },
      {
       "qes": "¿Dónde hago una pregunta después?",
@@ -1178,7 +1178,7 @@ window.SECTIONS = [
      {
       "q": "Do I upload the .ipynb or my photos?",
       "qes": "¿Subo el .ipynb o mis fotos?",
-      "en": "No. Do not upload the notebook file, your photos, a zip, or screenshots. I read your code and your log from GitHub.",
+      "en": "No. Don't upload the notebook file, your photos, a zip, or screenshots. I read your code and your log from GitHub.",
       "es": "No. No subas el archivo del notebook, ni tus fotos, ni un zip, ni capturas. Tu código y tu log los leo desde GitHub."
      },
      {
@@ -1190,7 +1190,7 @@ window.SECTIONS = [
      {
       "q": "Is it one notebook or two?",
       "qes": "¿Es un notebook o dos?",
-      "en": "It is one notebook. Part A is Assignment 1.1, and Part B is Assignment 1.2. You export it twice, once for each assignment.",
+      "en": "It's one notebook. Part A is Assignment 1.1, and Part B is Assignment 1.2. You export it twice, once for each assignment.",
       "es": "Es un solo notebook. La parte A es la Tarea 1.1 y la parte B es la Tarea 1.2. Lo exportas dos veces, una para cada tarea."
      }
     ]
@@ -1205,7 +1205,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Puedo trabajar dentro del ZIP?",
-      "en": "No. Please extract the folder first. Do not work inside the ZIP file."
+      "en": "No. Please extract the folder first. Don't work inside the ZIP file."
      },
      {
       "qes": "¿Puedo cambiar el nombre de la carpeta?",
@@ -1253,11 +1253,11 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Para qué está reference?",
-      "en": "It has my backup code. Use it only if you are stuck, and write that in LOG.md."
+      "en": "It has my backup code. Use it only if you're stuck, and write that in LOG.md."
      },
      {
       "qes": "¿Se usa este proyecto luego?",
-      "en": "Yes. Keep this same project. We will add more parts each week."
+      "en": "Yes. Keep this same project. We'll add more parts each week."
      }
     ]
    },
@@ -1271,11 +1271,11 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué objeto puedo elegir?",
-      "en": "Choose an object from your work or your interests. You do not need to choose potholes."
+      "en": "Choose an object from your work or your interests. You don't need to choose potholes."
      },
      {
       "qes": "¿Tengo que decidir el proyecto final hoy?",
-      "en": "No. Choose an object for this practice. You will define your project in Module 2."
+      "en": "No. Choose an object for this practice. You'll define your project in Module 2."
      },
      {
       "qes": "¿Las tres fotos tienen que ser iguales?",
@@ -1287,7 +1287,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Puedo buscar fotos en internet?",
-      "en": "Use only photos you have the right to use. Please do not use private images."
+      "en": "Use only photos you have the right to use. Please don't use private images."
      },
      {
       "qes": "¿Puedo usar rostros o matrículas?",
@@ -1295,7 +1295,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Tengo que subir mis fotos a GitHub?",
-      "en": "No. Keep them in data/m1_images/. That folder is not uploaded to GitHub."
+      "en": "No. Keep them in data/m1_images/. That folder isn't uploaded to GitHub."
      },
      {
       "qes": "¿Por qué usar tres imágenes?",
@@ -1303,7 +1303,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué hago si una foto es muy difícil?",
-      "en": "That can be useful. Show what the filter can and cannot find."
+      "en": "That can be useful. Show what the filter can and can't find."
      },
      {
       "qes": "¿Tengo que etiquetar objetos ahora?",
@@ -1375,7 +1375,7 @@ window.SECTIONS = [
     "items": [
      {
       "qes": "¿Qué es .venv?",
-      "en": "It is a private Python environment for this project. It keeps the libraries together."
+      "en": "It's a private Python environment for this project. It keeps the libraries together."
      },
      {
       "qes": "Crear .venv en Windows",
@@ -1427,7 +1427,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué es un kernel de Jupyter?",
-      "en": "It is the Python that runs your notebook cells."
+      "en": "It's the Python that runs your notebook cells."
      },
      {
       "qes": "¿Qué pasa si uso otro kernel?",
@@ -1436,7 +1436,7 @@ window.SECTIONS = [
      {
       "q": "Which Python version do I need?",
       "qes": "¿Qué versión de Python necesito?",
-      "en": "Use Python 3.12. Do not use 3.13. PyTorch does not work with 3.13 on some computers.",
+      "en": "Use Python 3.12. Don't use 3.13. PyTorch doesn't work with 3.13 on some computers.",
       "es": "Python 3.12. Por favor no usen la 3.13, porque PyTorch no está disponible para esa versión en algunas computadoras.",
       "pron": "PyTorch (PÁI-torch)"
      },
@@ -1463,14 +1463,14 @@ window.SECTIONS = [
      {
       "q": "Windows says running scripts is disabled.",
       "qes": "Windows dice que los scripts están deshabilitados.",
-      "en": "That is a PowerShell setting. Run the Set-ExecutionPolicy line from the guide, and then activate the environment again.",
+      "en": "That's a PowerShell setting. Run the Set-ExecutionPolicy line from the guide, and then activate the environment again.",
       "es": "Es una configuración de PowerShell. Corre la línea Set-ExecutionPolicy de la guía y luego activa el entorno otra vez.",
       "pron": "environment (en-VÁI-ron-ment)"
      },
      {
       "q": "My computer is old. What can I do?",
       "qes": "Mi computadora es vieja. ¿Qué hago?",
-      "en": "You can use Google Colab. It is free. But Colab deletes your files when the session ends, so download your notebook often.",
+      "en": "You can use Google Colab. It's free. But Colab deletes your files when the session ends, so download your notebook often.",
       "es": "Puedes usar Google Colab. Es gratis. Pero Colab borra tus archivos cuando termina la sesión, así que descarga tu notebook seguido.",
       "pron": "Colab (KÓU-lab)"
      }
@@ -1494,7 +1494,7 @@ window.SECTIONS = [
      },
      {
       "qes": "Aparece classical.py not yet",
-      "en": "That is okay at this step. We build src/classical.py later."
+      "en": "That's okay at this step. We build src/classical.py later."
      },
      {
       "qes": "Aparece photos 0",
@@ -1580,7 +1580,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Debo subir .venv?",
-      "en": "No. Do not upload .venv, datasets, or model weights."
+      "en": "No. Don't upload .venv, datasets, or model weights."
      },
      {
       "qes": "¿Qué significa push?",
@@ -1618,7 +1618,7 @@ window.SECTIONS = [
       "es": "No. El archivo .gitignore deja la carpeta data fuera del repositorio, así tus fotos quedan privadas."
      },
      {
-      "q": "What is a commit?",
+      "q": "What's a commit?",
       "qes": "¿Qué es un commit?",
       "en": "A commit is like a photo of your project, with a message. For 1.1, your last commit must say: Assignment 1.1: simple filters.",
       "es": "Un commit es como una foto de tu proyecto en un momento, con un mensaje. Tu último commit de la 1.1 debe decir: Assignment 1.1: simple filters."
@@ -1647,7 +1647,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿La universidad ofrece acceso?",
-      "en": "The university provides an AI assistant seat if you do not have one."
+      "en": "The university provides an AI assistant seat if you don't have one."
      },
      {
       "qes": "¿Qué debo pedirle primero a Claude?",
@@ -1663,7 +1663,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué hago si Claude pide permiso?",
-      "en": "Read the command first. If it is right, you can approve it."
+      "en": "Read the command first. If it's right, you can approve it."
      },
      {
       "qes": "¿Qué pasa si se queda esperando?",
@@ -1691,24 +1691,24 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué pasa si copio un análisis hecho por IA?",
-      "en": "Please do not do that. I need your own words and your own understanding."
+      "en": "Please don't do that. I need your own words and your own understanding."
      },
      {
       "q": "Can Claude Code write my code?",
       "qes": "¿Claude Code puede escribir mi código?",
-      "en": "Yes, that is how we work in this course. But your observations and sentences must be yours. Use your own words.",
+      "en": "Yes, that's how we work in this course. But your observations and sentences must be yours. Use your own words.",
       "es": "Sí, así trabajamos en este curso. Pero las observaciones y las frases de tu notebook tienen que ser tuyas, con tus propias palabras."
      },
      {
-      "q": "What is the five-step cycle?",
+      "q": "What's the five-step cycle?",
       "qes": "¿Cuál es el ciclo de cinco pasos?",
       "en": "You explain what you need. Claude proposes a plan. You review and approve it. Claude writes and runs the code. And you verify the result.",
       "es": "Tú explicas lo que necesitas. Claude propone un plan. Tú lo revisas y lo apruebas. Claude escribe y corre el código. Y tú verificas el resultado."
      },
      {
-      "q": "What is CLAUDE.md for?",
+      "q": "What's CLAUDE.md for?",
       "qes": "¿Para qué sirve CLAUDE.md?",
-      "en": "It is the memory of the project. Claude reads it at the start of every session. So you do not need to repeat your rules.",
+      "en": "It's the memory of the project. Claude reads it at the start of every session. So you don't need to repeat your rules.",
       "es": "Es la memoria del proyecto. Claude lo lee al inicio de cada sesión, así no repites las mismas reglas cada vez."
      },
      {
@@ -1720,13 +1720,13 @@ window.SECTIONS = [
      {
       "q": "Claude is waiting and nothing happens.",
       "qes": "Claude está esperando y no pasa nada.",
-      "en": "It is waiting for your approval. Read the plan or the command, and choose Yes if you agree.",
+      "en": "It's waiting for your approval. Read the plan or the command, and choose Yes if you agree.",
       "es": "Está esperando tu aprobación. Lee el plan o el comando y elige Yes si estás de acuerdo."
      },
      {
       "q": "What do I write in LOG.md?",
       "qes": "¿Qué escribo en LOG.md?",
-      "en": "Three or four lines per session. What you asked Claude, what you checked, and what you changed. Include the requests that did not work.",
+      "en": "Three or four lines per session. What you asked Claude, what you checked, and what you changed. Include the requests that didn't work.",
       "es": "Tres o cuatro líneas por sesión. Qué le pediste a Claude, qué comprobaste y qué cambiaste. Incluye los pedidos que no funcionaron."
      }
     ]
@@ -1741,7 +1741,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Registro errores también?",
-      "en": "Yes. Include prompts that did not work and what you did next."
+      "en": "Yes. Include prompts that didn't work and what you did next."
      },
      {
       "qes": "¿Cuánto tengo que escribir?",
@@ -1749,7 +1749,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué pasa si uso el archivo de referencia?",
-      "en": "That is allowed if you are stuck. Please say so in LOG.md."
+      "en": "That's allowed if you're stuck. Please say so in LOG.md."
      },
      {
       "qes": "¿Debo citar fuentes?",
@@ -1783,7 +1783,7 @@ window.SECTIONS = [
     "items": [
      {
       "qes": "¿Qué es src/classical.py?",
-      "en": "It is the Python file with the image functions for Module 1."
+      "en": "It's the Python file with the image functions for Module 1."
      },
      {
       "qes": "¿Cuántas funciones hay en la guía?",
@@ -1851,7 +1851,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué es KERNELS?",
-      "en": "It is a set of ready-made filters, like identity and sharpen."
+      "en": "It's a set of ready-made filters, like identity and sharpen."
      }
     ]
    },
@@ -1865,7 +1865,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué es un notebook?",
-      "en": "It is a file where you run code and write notes in the same place."
+      "en": "It's a file where you run code and write notes in the same place."
      },
      {
       "qes": "¿Dónde elijo el kernel?",
@@ -1913,7 +1913,7 @@ window.SECTIONS = [
      },
      {
       "qes": "Si una celda tiene error",
-      "en": "Show me that cell and the full error. We will check it."
+      "en": "Show me that cell and the full error. We'll check it."
      }
     ]
    },
@@ -1923,15 +1923,15 @@ window.SECTIONS = [
     "items": [
      {
       "qes": "¿Qué es una imagen para Python?",
-      "en": "It is a table of numbers. Each small part is a pixel."
+      "en": "It's a table of numbers. Each small part is a pixel."
      },
      {
       "qes": "¿Qué es un píxel?",
-      "en": "It is one small part of an image, like one tile in a picture."
+      "en": "It's one small part of an image, like one tile in a picture."
      },
      {
       "qes": "¿Qué es una matriz?",
-      "en": "It is a table with rows and columns."
+      "en": "It's a table with rows and columns."
      },
      {
       "qes": "¿Qué es uint8?",
@@ -1970,16 +1970,16 @@ window.SECTIONS = [
       "en": "It stores the colour, how strong it is, and how bright it is."
      },
      {
-      "q": "What is an image for a computer?",
+      "q": "What's an image for a computer?",
       "qes": "¿Qué es una imagen para la computadora?",
-      "en": "It is a table of numbers, a matrix. Each cell is a pixel. In gray, each pixel is a number from 0, black, to 255, white.",
+      "en": "It's a table of numbers, a matrix. Each cell is a pixel. In gray, each pixel is a number from 0, black, to 255, white.",
       "es": "Es una tabla de números, una matriz. Cada celda es un píxel. En gris, cada píxel es un número del 0, negro, al 255, blanco.",
       "pron": "matrix (MÉI-triks) · pixel (PÍK-sel)"
      },
      {
       "q": "Why does my photo look blue?",
       "qes": "¿Por qué mi foto se ve azul?",
-      "en": "That is the BGR problem. OpenCV stores the colors as blue, green, red. Convert to RGB before you show the image.",
+      "en": "That's the BGR problem. OpenCV stores the colors as blue, green, red. Convert to RGB before you show the image.",
       "es": "Es el problema del BGR. OpenCV guarda los colores como azul, verde, rojo. Convierte a RGB antes de mostrar la imagen.",
       "pron": "OpenCV (óu-pen-si-VÍ)"
      },
@@ -1993,7 +1993,7 @@ window.SECTIONS = [
      {
       "q": "What does shape mean?",
       "qes": "¿Qué significa shape?",
-      "en": "It is the size of the table. A color image is height, width, and 3. A gray image is only height and width.",
+      "en": "It's the size of the table. A color image is height, width, and 3. A gray image is only height and width.",
       "es": "Es el tamaño de la tabla. Una imagen a color es alto, ancho y 3. Una imagen en gris es solo alto y ancho.",
       "pron": "height (JÁIT) · width (UÍDZ)"
      }
@@ -2048,7 +2048,7 @@ window.SECTIONS = [
       "en": "The notebook includes this practice. Explain what changed in the numbers, in your own words."
      },
      {
-      "q": "What is the difference between brightness and contrast?",
+      "q": "What's the difference between brightness and contrast?",
       "qes": "¿Diferencia entre brillo y contraste?",
       "en": "Brightness adds the same number to every pixel. Contrast multiplies, so the difference between dark and light grows.",
       "es": "El brillo suma el mismo número a cada píxel. El contraste multiplica, así que crece la diferencia entre oscuro y claro.",
@@ -2064,7 +2064,7 @@ window.SECTIONS = [
      {
       "q": "My image has strange spots after adding brightness.",
       "qes": "Mi imagen tiene manchas raras al subir el brillo.",
-      "en": "That is uint8 overflow. 200 plus 100 gives 44, because the number wraps around. Use the OpenCV function, which stops at 255.",
+      "en": "That's uint8 overflow. 200 plus 100 gives 44, because the number wraps around. Use the OpenCV function, which stops at 255.",
       "es": "Es el desbordamiento de uint8. 200 más 100 da 44, porque el número da la vuelta. Usa la función de OpenCV, que se detiene en 255.",
       "pron": "uint8 (iú-int-ÉIT) · overflow (óu-ver-FLÓU)"
      }
@@ -2100,7 +2100,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Por qué probar dos tamaños?",
-      "en": "I want you to see what is lost when the filter gets bigger."
+      "en": "I want you to see what's lost when the filter gets bigger."
      },
      {
       "qes": "¿Cuál tamaño debo usar en 1.1?",
@@ -2116,14 +2116,14 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué filtro es mejor?",
-      "en": "There is no single best size. Look at what you need to keep."
+      "en": "There's no single best size. Look at what you need to keep."
      },
      {
       "qes": "¿Debo usar blur antes de Canny?",
       "en": "Yes. Use the same small blur before each edge operator."
      },
      {
-      "q": "What is a kernel?",
+      "q": "What's a kernel?",
       "qes": "¿Qué es un kernel?",
       "en": "A kernel is a small table of weights, for example 3 by 3. It slides over the image and changes each pixel using its neighbors.",
       "es": "Un kernel es una tablita de pesos, por ejemplo de 3 por 3. Se desliza por la imagen y cambia cada píxel usando sus vecinos.",
@@ -2132,19 +2132,19 @@ window.SECTIONS = [
      {
       "q": "Why must the size be odd?",
       "qes": "¿Por qué el tamaño debe ser impar?",
-      "en": "So the window has one pixel exactly in the center. That is why we use 3, 5, 7, or 21.",
+      "en": "So the window has one pixel exactly in the center. That's why we use 3, 5, 7, or 21.",
       "es": "Para que la ventana tenga un píxel justo en el centro. Por eso usamos 3, 5, 7 o 21."
      },
      {
       "q": "Which blur sizes should I use?",
       "qes": "¿Qué tamaños de suavizado uso?",
-      "en": "One small and one large. For example, 5 by 5 and 21 by 21. Then write what is lost when the window grows.",
+      "en": "One small and one large. For example, 5 by 5 and 21 by 21. Then write what's lost when the window grows.",
       "es": "Uno pequeño y uno grande. Por ejemplo, 5 por 5 y 21 por 21. Luego escribe qué se pierde cuando la ventana crece."
      },
      {
-      "q": "What is a Gaussian blur?",
+      "q": "What's a Gaussian blur?",
       "qes": "¿Qué es un suavizado gaussiano?",
-      "en": "It is an average where the closest neighbors count more. Its shape looks like a bell.",
+      "en": "It's an average where the closest neighbors count more. Its shape looks like a bell.",
       "es": "Es un promedio donde los vecinos más cercanos pesan más. Su forma parece una campana.",
       "pron": "Gaussian (GÁU-si-an)"
      }
@@ -2156,7 +2156,7 @@ window.SECTIONS = [
     "items": [
      {
       "qes": "¿Qué es un kernel de imagen?",
-      "en": "It is a small table of numbers. We use it to find or change patterns."
+      "en": "It's a small table of numbers. We use it to find or change patterns."
      },
      {
       "qes": "¿Qué es convolution?",
@@ -2168,7 +2168,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué es un feature map?",
-      "en": "It is the new image made by the filter. High values show strong matches."
+      "en": "It's the new image made by the filter. High values show strong matches."
      },
      {
       "qes": "¿Qué es un filtro identity?",
@@ -2184,7 +2184,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Por qué el kernel tiene nueve pesos?",
-      "en": "A 3 × 3 kernel has three rows and three columns. That is nine numbers."
+      "en": "A 3 × 3 kernel has three rows and three columns. That's nine numbers."
      },
      {
       "qes": "¿Puedo crear mis nueve valores?",
@@ -2215,7 +2215,7 @@ window.SECTIONS = [
       "en": "It uses the same main idea. Later, a CNN will learn the filter values."
      },
      {
-      "q": "What is a convolution?",
+      "q": "What's a convolution?",
       "qes": "¿Qué es una convolución?",
       "en": "You slide the kernel over the image. At each position you multiply and add. Each position gives one number, and together they make the feature map.",
       "es": "Deslizas el kernel por la imagen. En cada posición multiplicas y sumas. Cada posición da un número, y juntos forman el mapa de características.",
@@ -2252,7 +2252,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué significa T?",
-      "en": "T is the threshold number. It is the limit used by the filter."
+      "en": "T is the threshold number. It's the limit used by the filter."
      },
      {
       "qes": "¿Qué pasa si el píxel es mayor que T?",
@@ -2295,9 +2295,9 @@ window.SECTIONS = [
       "en": "Not by itself. It separates light and dark, not one object from another."
      },
      {
-      "q": "What is a threshold?",
+      "q": "What's a threshold?",
       "qes": "¿Qué es un umbral?",
-      "en": "It is a number, T. Pixels brighter than T become white, and the rest become black.",
+      "en": "It's a number, T. Pixels brighter than T become white, and the rest become black.",
       "es": "Es un número, T. Los píxeles más claros que T quedan blancos y el resto queda negro.",
       "pron": "threshold (ZRÉSH-jould)"
      },
@@ -2324,7 +2324,7 @@ window.SECTIONS = [
      {
       "q": "When is adaptive better?",
       "qes": "¿Cuándo es mejor el adaptativo?",
-      "en": "When the light is not the same everywhere, for example a shadow on one side. It uses a different threshold for each small part.",
+      "en": "When the light isn't the same everywhere, for example a shadow on one side. It uses a different threshold for each small part.",
       "es": "Cuando la luz es desigual, por ejemplo una sombra de un lado. Usa un umbral distinto para cada zona pequeña."
      }
     ]
@@ -2359,7 +2359,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Por qué un borde no encuentra el bache?",
-      "en": "The filter sees brightness changes. It does not know what a pothole is."
+      "en": "The filter sees brightness changes. It doesn't know what a pothole is."
      },
      {
       "qes": "¿Por qué hacer blur primero?",
@@ -2370,9 +2370,9 @@ window.SECTIONS = [
       "en": "Yes. In Assignment 1.2, you must compare Sobel, Laplacian, and Canny."
      },
      {
-      "q": "What is an edge?",
+      "q": "What's an edge?",
       "qes": "¿Qué es un borde?",
-      "en": "An edge is not a color. It is a change. It is where the brightness changes fast, from light to dark.",
+      "en": "An edge isn't a color. It's a change. It's where the brightness changes fast, from light to dark.",
       "es": "Un borde no es un color, es un cambio. Es donde el brillo cambia rápido, de claro a oscuro o de oscuro a claro."
      },
      {
@@ -2383,7 +2383,7 @@ window.SECTIONS = [
       "pron": "Gx (yi-ÉKS) · Gy (yi-UÁI) · vertical (VÉR-ti-kal)"
      },
      {
-      "q": "What is the difference between Sobel and the Laplacian?",
+      "q": "What's the difference between Sobel and the Laplacian?",
       "qes": "¿Diferencia entre Sobel y el Laplaciano?",
       "en": "Sobel is the first derivative, it measures how strong the change is. The Laplacian is the second derivative, so it reacts a lot to fine texture.",
       "es": "Sobel es la primera derivada, mide qué tan fuerte es el cambio. El Laplaciano es la segunda derivada, por eso reacciona mucho a la textura fina.",
@@ -2527,7 +2527,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Si high es menor o igual que low?",
-      "en": "That is not valid for the course function. Low must be smaller than high."
+      "en": "That's not valid for the course function. Low must be smaller than high."
      },
      {
       "qes": "¿Por qué Canny no encuentra todo?",
@@ -2543,7 +2543,7 @@ window.SECTIONS = [
      {
       "q": "Why does Canny need two thresholds?",
       "qes": "¿Por qué Canny necesita dos umbrales?",
-      "en": "Above the high one is a sure edge. Below the low one is thrown away. In between, it is kept only if it touches a sure edge.",
+      "en": "Above the high one is a sure edge. Below the low one is thrown away. In between, it's kept only if it touches a sure edge.",
       "es": "Arriba del alto es un borde seguro. Abajo del bajo se descarta. En medio, se queda solo si toca un borde seguro."
      },
      {
@@ -2598,7 +2598,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué es scale?",
-      "en": "It is the size of the object in the image. A far object may look very small."
+      "en": "It's the size of the object in the image. A far object may look very small."
      },
      {
       "qes": "¿Por qué las sombras causan problemas?",
@@ -2610,7 +2610,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué conclusión espera el curso?",
-      "en": "Classical filters find changes, but they do not understand the object."
+      "en": "Classical filters find changes, but they don't understand the object."
      },
      {
       "qes": "¿Y qué cambia con una CNN?",
@@ -2631,15 +2631,15 @@ window.SECTIONS = [
       "pron": "occlusion (o-KLÚ-shon)"
      },
      {
-      "q": "What is occlusion?",
+      "q": "What's occlusion?",
       "qes": "¿Qué es la oclusión?",
-      "en": "It is when something covers part of the object. For example, a car on top of the pothole.",
+      "en": "It's when something covers part of the object. For example, a car on top of the pothole.",
       "es": "Es cuando algo tapa parte del objeto. Por ejemplo, un carro encima del bache."
      },
      {
       "q": "Why can't we just write better rules?",
       "qes": "¿Por qué no escribimos mejores reglas?",
-      "en": "Because the real world has too many cases. These tools do not know what the object is. They only know where the brightness changes.",
+      "en": "Because the real world has too many cases. These tools don't know what the object is. They only know where the brightness changes.",
       "es": "Porque el mundo real tiene demasiados casos. Estas herramientas no saben qué es el objeto. Solo saben dónde cambia el brillo."
      }
     ]
@@ -2694,7 +2694,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Puedo escribir solo “it looks blurry”?",
-      "en": "That is not enough. Tell me what the filter calculated."
+      "en": "That's not enough. Tell me what the filter calculated."
      },
      {
       "qes": "¿Me puedes escribir la explicación?",
@@ -2727,13 +2727,13 @@ window.SECTIONS = [
       "es": "No. Usa fotos del objeto que te gustaría detectar en tu proyecto. Nada privado, y solo fotos que tengas derecho a usar."
      },
      {
-      "q": "What is worth the most points?",
+      "q": "What's worth the most points?",
       "qes": "¿Qué vale más puntos?",
       "en": "The sentences under each result, 25 percent. And your own kernel with the prediction, 20 percent.",
       "es": "Las frases debajo de cada resultado, 25 por ciento. Y tu propio kernel con la predicción, 20 por ciento."
      },
      {
-      "q": "The tests do not pass.",
+      "q": "The tests don't pass.",
       "qes": "Las pruebas no pasan.",
       "en": "Paste the error to Claude and read the spec. If it still fails, copy the reference file to src/classical.py. Write that in LOG.md.",
       "es": "Pégale el error a Claude y revisa la especificación. Si sigue fallando, copia el archivo de referencia a src/classical.py y escríbelo en LOG.md.",
@@ -2779,7 +2779,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué sucede si un filtro no ayuda?",
-      "en": "That is useful to report. Tell me why the result was not helpful."
+      "en": "That's useful to report. Tell me why the result wasn't helpful."
      }
     ]
    },
@@ -2858,12 +2858,12 @@ window.SECTIONS = [
      {
       "q": "How should the comparison end?",
       "qes": "¿Cómo debe terminar la comparación?",
-      "en": "With what the classical operators could not do for your object. That is the reason your detector will learn its own features.",
+      "en": "With what the classical operators could not do for your object. That's the reason your detector will learn its own features.",
       "es": "Con lo que los operadores clásicos no pudieron hacer con tu objeto. Esa es la razón por la que tu detector va a aprender sus propias características.",
       "pron": "features (FÍ-chers)"
      },
      {
-      "q": "What is the last commit message?",
+      "q": "What's the last commit message?",
       "qes": "¿Cuál es el mensaje del último commit?",
       "en": "Assignment 1.2: boundary detection.",
       "es": "Assignment 1.2: boundary detection.",
@@ -2927,11 +2927,11 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Subo el archivo .ipynb?",
-      "en": "No. Do not upload the .ipynb to Moodle."
+      "en": "No. Don't upload the .ipynb to Moodle."
      },
      {
       "qes": "¿Subo fotos, capturas o ZIP?",
-      "en": "No. Do not upload photos, screenshots, or ZIP files."
+      "en": "No. Don't upload photos, screenshots, or ZIP files."
      },
      {
       "qes": "¿Dónde está el código?",
@@ -2967,7 +2967,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿La 1.2 incluye lo anterior?",
-      "en": "Yes. It is the same notebook with Part B added."
+      "en": "Yes. It's the same notebook with Part B added."
      },
      {
       "qes": "¿Puedo usar el mismo link de GitHub?",
@@ -2975,7 +2975,7 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué hago si el enlace no abre?",
-      "en": "Please check the link and make sure I am a collaborator."
+      "en": "Please check the link and make sure I'm a collaborator."
      },
      {
       "qes": "¿Cuál es la última revisión?",
@@ -3083,7 +3083,7 @@ window.SECTIONS = [
      },
      {
       "qes": "Los tres operadores dan resultados distintos",
-      "en": "That is expected. They measure different things."
+      "en": "That's expected. They measure different things."
      },
      {
       "qes": "La magnitud de Sobel se ve extraña",
@@ -3105,7 +3105,7 @@ window.SECTIONS = [
     "items": [
      {
       "qes": "¿Puedo usar Google Colab?",
-      "en": "Yes, if your computer cannot run the course. Follow the Colab part of the guide."
+      "en": "Yes, if your computer can't run the course. Follow the Colab part of the guide."
      },
      {
       "qes": "¿Es la primera opción?",
@@ -3151,19 +3151,19 @@ window.SECTIONS = [
     "items": [
      {
       "qes": "¿Cuándo elegiré proyecto final?",
-      "en": "In Module 2, you will define your project and get your dataset."
+      "en": "In Module 2, you'll define your project and get your dataset."
      },
      {
       "qes": "¿Qué es CNN?",
-      "en": "It is a neural network that learns useful image filters from examples."
+      "en": "It's a neural network that learns useful image filters from examples."
      },
      {
       "qes": "¿Qué es object detection?",
-      "en": "It finds objects and shows where they are in an image."
+      "en": "It finds objects and shows where they're in an image."
      },
      {
       "qes": "¿Qué es classification?",
-      "en": "It tells us what is in the image."
+      "en": "It tells us what's in the image."
      },
      {
       "qes": "¿Qué es localisation?",
@@ -3171,11 +3171,11 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué es YOLO?",
-      "en": "It is a model used to detect objects in images."
+      "en": "It's a model used to detect objects in images."
      },
      {
       "qes": "¿Qué es Faster R-CNN?",
-      "en": "It is another object detection model. We compare it with YOLO."
+      "en": "It's another object detection model. We compare it with YOLO."
      },
      {
       "qes": "¿Entrenaremos los dos modelos?",
@@ -3183,11 +3183,11 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué es un dataset?",
-      "en": "It is a set of images we use to work on the project."
+      "en": "It's a set of images we use to work on the project."
      },
      {
       "qes": "¿Qué es una annotation?",
-      "en": "It is a label or box that tells the model where an object is."
+      "en": "It's a label or box that tells the model where an object is."
      },
      {
       "qes": "¿Qué es Gradio?",
@@ -3199,11 +3199,11 @@ window.SECTIONS = [
      },
      {
       "qes": "¿Qué haré en el video final?",
-      "en": "You will show the system working and explain one problem it has."
+      "en": "You'll show the system working and explain one problem it has."
      },
      {
       "qes": "¿Qué significa mAP?",
-      "en": "It is a score to measure a detector. We will study it in Module 3."
+      "en": "It's a score to measure a detector. We'll study it in Module 3."
      }
     ]
    }
