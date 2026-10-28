@@ -289,6 +289,60 @@ window.SECTIONS = [
       "es": "Muchas gracias por venir. Que tengan una excelente semana, y nos vemos la próxima."
      }
     ]
+   },
+   {
+    "id": "bye",
+    "title": "El estudiante se despide",
+    "items": [
+     {
+      "en": "Thank you for coming. Have a great day!",
+      "es": "Gracias por venir. ¡Que tengas un excelente día!"
+     },
+     {
+      "en": "You are welcome. I am happy to help.",
+      "es": "De nada. Me alegra ayudarte."
+     },
+     {
+      "en": "Before you go, is everything clear now?",
+      "es": "Antes de que te vayas, ¿ya está todo claro?"
+     },
+     {
+      "en": "Before you go, do you have any other questions?",
+      "es": "Antes de que te vayas, ¿tienes alguna otra pregunta?"
+     },
+     {
+      "en": "Good work today. You are on the right track.",
+      "es": "Buen trabajo hoy. Vas por buen camino."
+     },
+     {
+      "en": "Remember, both assignments are due Sunday, November 1st, at 11:59 PM.",
+      "es": "Recuerda, las dos tareas vencen el domingo 1 de noviembre a las 11:59 PM."
+     },
+     {
+      "en": "If you have more questions, write in the forum. I answer within 48 hours.",
+      "es": "Si tienes más preguntas, escribe en el foro. Respondo en menos de 48 horas."
+     },
+     {
+      "en": "If the error comes back, send me a screenshot in the forum.",
+      "es": "Si el error vuelve, mándame una captura en el foro."
+     },
+     {
+      "en": "Good luck with your project. See you next week!",
+      "es": "Mucha suerte con tu proyecto. ¡Nos vemos la próxima semana!"
+     },
+     {
+      "en": "Take care. Bye!",
+      "es": "Cuídate. ¡Adiós!"
+     },
+     {
+      "en": "Have a nice weekend!",
+      "es": "¡Que tengas un buen fin de semana!"
+     },
+     {
+      "en": "Thank you for your patience today. Bye!",
+      "es": "Gracias por tu paciencia hoy. ¡Adiós!"
+     }
+    ]
    }
   ]
  },
