@@ -25,6 +25,7 @@
 
 * { box-sizing: border-box }
 [hidden] { display: none !important }
+html, body { overscroll-behavior-x: none }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.45 }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--navy) }
 button { font: inherit; color: inherit; cursor: pointer }
@@ -268,6 +269,22 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     const depth = (e.state && e.state.depth) || 1;
     if (depth < stack.length) { stack.length = depth; render() }
   });
+
+  // Mac trackpad: a two-finger swipe to the right goes back one view (the browser's own swipe can't see these views inside an embedded page).
+  let wx = 0, wt = 0, wlock = 0;
+  window.addEventListener("wheel", e => {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || stack.length < 2) return;
+    if (e.target.closest && e.target.closest(".chips, .msgs")) return;  // these scroll sideways on their own
+    e.preventDefault();
+    const now = Date.now();
+    if (now < wlock) return;
+    if (now - wt > 300) wx = 0;
+    wt = now; wx += e.deltaX;
+    const p = Math.max(0, Math.min(1, -wx / 140));
+    hint.style.opacity = p; hint.style.transform = `translateY(-50%) translateX(${p * 24}px)`;
+    clearTimeout(window.__wh); window.__wh = setTimeout(() => { hint.style.opacity = 0; hint.style.transform = "translateY(-50%)" }, 250);
+    if (wx < -140) { wx = 0; wlock = now + 800; back() }
+  }, { passive: false });
 
   // Swipe left to right anywhere on the screen goes back one view.
   const hint = document.getElementById("swipeHint");
