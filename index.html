@@ -175,6 +175,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
       <option value="0.85" selected>Voz normal</option>
       <option value="1">Voz rápida</option>
     </select>
+    <select class="speed" id="voicePick" aria-label="Voz" hidden></select>
   </div>
   <nav class="chips" id="chips" aria-label="Temas del módulo" hidden></nav>
 </header>
@@ -216,7 +217,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     get(k, d) { try { const v = localStorage.getItem("oh_" + k); return v === null ? d : JSON.parse(v) } catch (e) { return d } },
     set(k, v) { try { localStorage.setItem("oh_" + k, JSON.stringify(v)) } catch (e) {} }
   };
-  const opts = { es: store.get("es", true), practice: store.get("practice", false), pron: store.get("pron", true), speed: store.get("speed", "0.85") };
+  const opts = { voice: store.get("voice", ""), es: store.get("es", true), practice: store.get("practice", false), pron: store.get("pron", true), speed: store.get("speed", "0.85") };
   let stack = [];  // navigation history: [{v:'home'}, {v:'section', s}, {v:'topic', s, t}]
   const tts = "speechSynthesis" in window;
 
@@ -252,10 +253,20 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     const r = out.join(" · "); pronCache.set(en, r); return r;
   }
 
+  // English voices only. Safari writes the language as "en_US", other browsers as "en-US".
+  const isEnUS = v => /^en[-_]US/i.test(v.lang);
+  const enVoices = () => (tts ? speechSynthesis.getVoices() : []).filter(v => /^en[-_]/i.test(v.lang));
+  const PREFERRED = [/Samantha.*(Premium|Enhanced|Mejorada)/i, /Ava.*(Premium|Enhanced)/i, /Zoe.*(Premium|Enhanced)/i, /Aria.*Natural/i, /Jenny.*Natural/i,
+    /Google US English/i, /^Samantha/i, /Aria|Jenny/i, /Nicky/i];
+  function bestVoice() {
+    const vs = enVoices();
+    for (const rx of PREFERRED) { const v = vs.find(x => isEnUS(x) && rx.test(x.name)); if (v) return v }
+    return vs.find(isEnUS) || vs[0] || null;
+  }
   function voice() {
     if (!tts) return null;
-    const vs = speechSynthesis.getVoices();
-    return vs.find(v => v.lang === "en-US" && /Samantha|Google US|Aria|Jenny/i.test(v.name)) || vs.find(v => v.lang === "en-US") || vs.find(v => v.lang.startsWith("en")) || null;
+    const chosen = opts.voice && enVoices().find(v => v.name === opts.voice);
+    return chosen || bestVoice();
   }
   function say(text, rate) {
     if (!tts) return;
@@ -632,7 +643,17 @@ COURSE CONTEXT:
   sp.onchange = () => { opts.speed = sp.value; store.set("speed", sp.value) };
   document.getElementById("back").onclick = back;
   document.getElementById("home").onclick = () => { if (stack.length > 1) history.go(1 - stack.length) };
-  if (tts) speechSynthesis.onvoiceschanged = () => {};
+  // Voice picker: every English voice this browser has; the choice is remembered on this device.
+  const vp = document.getElementById("voicePick");
+  function fillVoices() {
+    const vs = enVoices();
+    if (!vs.length) { vp.hidden = true; return }
+    const cur = voice();
+    vp.innerHTML = vs.map(v => `<option value="${esc(v.name)}"${cur && v.name === cur.name ? " selected" : ""}>Voz: ${esc(v.name)}</option>`).join("");
+    vp.hidden = false;
+  }
+  vp.onchange = () => { opts.voice = vp.value; store.set("voice", vp.value); say("Hello. This is how I sound.") };
+  if (tts) { fillVoices(); speechSynthesis.onvoiceschanged = fillVoices }
 
   // Optional deep link: #m1 or #m1-canny
   stack = [{ v: "home" }];
