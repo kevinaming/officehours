@@ -708,6 +708,7 @@ COURSE CONTEXT:
 
   function setBarH() { document.documentElement.style.setProperty("--barH", document.querySelector(".bar").offsetHeight + "px") }
   window.addEventListener("resize", setBarH);
+  if (window.ResizeObserver) new ResizeObserver(setBarH).observe(document.querySelector(".bar"));  // the bar grows when its rows wrap or fonts load
   document.getElementById("readerStop").onclick = () => stopReading();
 
   // Re-draw after a display option changes, keeping the same phrase in the same place on screen.
