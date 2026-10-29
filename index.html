@@ -29,21 +29,21 @@ button:focus-visible, select:focus-visible { outline: 3px solid var(--red); outl
 
 .bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; color: #fff;
   background: rgba(34, 50, 79, .82); -webkit-backdrop-filter: blur(18px) saturate(120%); backdrop-filter: blur(18px) saturate(120%);
-  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+  padding-block: 6px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
 .bar-row { max-width: 980px; margin: 0 auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
-.navbtn { background: rgba(255,255,255,.12); border: 0; border-radius: 10px; padding: 10px 16px; font-weight: 700; color: #fff; min-height: 46px }
+.navbtn { background: rgba(255,255,255,.12); border: 0; border-radius: 9px; padding: 6px 12px; font-size: 14px; font-weight: 700; color: #fff; min-height: 36px }
 .navbtn:hover { background: rgba(255,255,255,.22) }
 .crumb { flex: 1; min-width: 0; font-family: var(--display); font-weight: 600; font-size: 15px; letter-spacing: .02em; opacity: .9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
-.opts { max-width: 980px; margin: 0 auto; padding-top: 8px; display: flex; gap: 8px; flex-wrap: wrap }
+.opts { max-width: 980px; margin: 0 auto; padding-top: 6px; display: flex; gap: 6px; flex-wrap: wrap }
 /* the options row folds away; the arrow button in the top row opens it */
 .opts-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease }
 .opts-wrap > .opts { min-height: 0; overflow: hidden }
 .opts-wrap.open { grid-template-rows: 1fr }
 .opts-wrap.open.shown > .opts { overflow: visible }  /* after it opens, the selector lists can float over the content */
-.optsBtn { display: inline-flex; align-items: center; gap: 8px }
+.optsBtn { display: inline-flex; align-items: center; justify-content: center; width: 36px; padding: 0 }
 .optsBtn .chev { width: 9px; height: 9px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .25s }
 .optsBtn[aria-expanded="true"] .chev { transform: translateY(2px) rotate(-135deg) }
-.toggle { background: transparent; border: 1.5px solid rgba(255,255,255,.35); color: #fff; border-radius: 999px; padding: 6px 14px; font-size: 14px; min-height: 38px }
+.toggle { background: transparent; border: 1.5px solid rgba(255,255,255,.35); color: #fff; border-radius: 999px; padding: 4px 12px; font-size: 13px; min-height: 32px }
 .toggle[aria-pressed="true"] { background: #fff; color: #0C1422; border-color: #fff; font-weight: 700 }
 .speed { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.35); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 14px; min-height: 38px }
 .speed option { color: var(--ink); background: var(--surface) }
@@ -104,7 +104,7 @@ h1 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 4vw, 
 @media (prefers-reduced-motion: reduce) { .np-card { animation: none } }
 /* the topic title and "Leer todo" are part of the fixed bar, so they never move; the phrases slide underneath */
 #barTopic:empty { display: none }
-#barTopic { margin: 10px calc(-1 * max(16px, env(safe-area-inset-right, 0px))) -10px calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+#barTopic { margin: 6px calc(-1 * max(16px, env(safe-area-inset-right, 0px))) -6px calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
   padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
   background: rgba(11, 17, 28, .72); border-bottom: 1.5px solid var(--line); color: var(--ink) }
 .topic-head { max-width: 980px; margin: 0 auto; padding-block: 14px 12px }
@@ -140,7 +140,7 @@ main.in-topic { padding-top: 14px }
 .drop-box { position: relative }
 .drop.open .drop-box { position: absolute; top: 0; left: 0; width: max-content; min-width: 100%; transform: translateY(-2px) scale(1.02); transition: transform .3s }
 .drop.open .drop-head { width: 100%; max-width: none; justify-content: space-between }
-.drop-head { display: inline-flex; align-items: center; gap: 10px; min-height: 38px; max-width: 280px; padding: 6px 16px; color: inherit; font: inherit; font-size: 14px;
+.drop-head { display: inline-flex; align-items: center; gap: 10px; min-height: 32px; max-width: 280px; padding: 4px 14px; color: inherit; font: inherit; font-size: 13px;
   background: transparent; border: 1.5px solid rgba(255,255,255,.35); border-radius: 19px; white-space: nowrap; transition: border-radius .25s, background .25s, box-shadow .3s }
 .drop-head span:first-child { overflow: hidden; text-overflow: ellipsis }
 .chev { flex: none; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .3s }
@@ -158,9 +158,9 @@ main.in-topic { padding-top: 14px }
 .note { margin-top: 26px; color: var(--muted); font-size: 14px }
 
 /* Topic row under the bar */
-.chips { max-width: 980px; margin: 10px auto 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px }
+.chips { max-width: 980px; margin: 6px auto 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px }
 .chips::-webkit-scrollbar { display: none }
-.chip { flex: none; background: rgba(255,255,255,.1); border: 0; color: #fff; border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 700; min-height: 40px; white-space: nowrap }
+.chip { flex: none; background: rgba(255,255,255,.1); border: 0; color: #fff; border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 700; min-height: 32px; white-space: nowrap }
 .chip[aria-current="true"] { background: #fff; color: #0C1422 }
 
 /* Floating "Temas" button and the topics panel */
@@ -234,7 +234,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   <div class="bar-row">
     <button class="navbtn" id="back" type="button">‹ Back</button>
     <div class="crumb" id="crumb">Inicio</div>
-    <button class="navbtn optsBtn" id="optsBtn" type="button" aria-expanded="false" aria-controls="optsWrap">Options <span class="chev" aria-hidden="true"></span></button>
+    <button class="navbtn optsBtn" id="optsBtn" type="button" aria-expanded="false" aria-controls="optsWrap" aria-label="Options" title="Options"><span class="chev" aria-hidden="true"></span></button>
     <button class="navbtn" id="home" type="button">Home</button>
   </div>
   <div class="opts-wrap" id="optsWrap"><div class="opts" inert>
