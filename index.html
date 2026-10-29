@@ -74,6 +74,7 @@ h1 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 4vw, 
 .act { border: 1.5px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 14px; font-weight: 700; font-size: 15px; min-height: 44px }
 .act:hover { border-color: var(--red) }
 .act.play { background: var(--navy); color: #fff; border-color: var(--navy) }
+.act.stopping, .sel-say button.stopping { background: var(--red); color: #fff; border-color: var(--red) }
 .hidden-en { filter: blur(7px); user-select: none; cursor: pointer }
 .reveal-hint { font-size: 13px; color: var(--muted) }
 .next { margin-top: 22px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap }
@@ -268,12 +269,23 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     const chosen = opts.voice && enVoices().find(v => v.name === opts.voice);
     return chosen || bestVoice();
   }
-  function say(text, rate) {
+  // The button that started the voice turns into "■ Detener" until the phrase ends; pressing it again stops.
+  let speakingBtn = null;
+  function resetBtn() {
+    if (speakingBtn) { speakingBtn.innerHTML = speakingBtn.dataset.label; speakingBtn.classList.remove("stopping"); speakingBtn = null }
+  }
+  function say(text, rate, btn) {
     if (!tts) return;
-    speechSynthesis.cancel();
+    const same = btn && btn === speakingBtn;
+    speechSynthesis.cancel(); resetBtn();
+    if (same) return;  // second press = stop
     const u = new SpeechSynthesisUtterance(text);
     const v = voice(); if (v) u.voice = v;
     u.lang = "en-US"; u.rate = rate || parseFloat(opts.speed);
+    if (btn) {
+      btn.dataset.label = btn.innerHTML; btn.innerHTML = "■ Detener"; btn.classList.add("stopping"); speakingBtn = btn;
+      u.onend = u.onerror = () => { if (speakingBtn === btn) resetBtn() };
+    }
     speechSynthesis.speak(u);
   }
 
@@ -367,7 +379,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   document.addEventListener("selectionchange", () => { clearTimeout(selTimer); selTimer = setTimeout(placeSelSay, 250) });
   window.addEventListener("scroll", () => { if (!selSay.hidden) placeSelSay() }, { passive: true });
   selSay.addEventListener("pointerdown", e => e.preventDefault());  // keep the selection when the button is pressed
-  selSay.querySelectorAll("button").forEach(b => b.onclick = () => say(selText, b.dataset.rate ? parseFloat(b.dataset.rate) : null));
+  selSay.querySelectorAll("button").forEach(b => b.onclick = () => say(selText, b.dataset.rate ? parseFloat(b.dataset.rate) : null, b));
 
   function renderHome() {
     crumb.textContent = "MAI 630 · Office Hours";
@@ -420,7 +432,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
       </div>
       ${tts ? "" : `<p class="note">Este navegador no tiene voz en inglés disponible: el botón Escuchar no aparece.</p>`}`;
     view.querySelectorAll("[data-jump]").forEach(b => b.onclick = () => { stack[stack.length - 1] = { v: "topic", s: sid, t: b.dataset.jump }; history.replaceState({ depth: stack.length }, ""); render() });
-    view.querySelectorAll("[data-say]").forEach(b => b.onclick = () => { const it = t.items[+b.dataset.say]; say(b.dataset.kind === "q" ? it.q : it.en, b.dataset.rate ? parseFloat(b.dataset.rate) : null) });
+    view.querySelectorAll("[data-say]").forEach(b => b.onclick = () => { const it = t.items[+b.dataset.say]; say(b.dataset.kind === "q" ? it.q : it.en, b.dataset.rate ? parseFloat(b.dataset.rate) : null, b) });
     view.querySelectorAll(".hidden-en").forEach(el => el.onclick = () => { el.classList.remove("hidden-en"); const h = el.nextElementSibling; if (h && h.classList.contains("reveal-hint")) h.remove() });
   }
   function card(it, i) {
@@ -440,7 +452,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   }
 
   function render() {
-    if (tts) speechSynthesis.cancel();
+    if (tts) { speechSynthesis.cancel(); speakingBtn = null }
     const st = stack[stack.length - 1];
     document.getElementById("back").disabled = stack.length < 2;
     document.getElementById("back").style.visibility = stack.length < 2 ? "hidden" : "visible";
@@ -619,7 +631,7 @@ COURSE CONTEXT:
         ${opts.pron && it.pron ? `<div class="pron">Pronunciación: ${pronHtml(it.pron)}</div>` : ""}
         ${opts.es && it.es ? `<div class="es">${esc(it.es)}</div>` : ""}
         ${tts ? `<div class="actions"><button class="act play" type="button" data-n="1">▶ Escuchar</button><button class="act" type="button" data-n="0.6">Muy lento</button></div>` : ""}`;
-      bot.querySelectorAll("[data-n]").forEach(b => b.onclick = () => say(it.en, parseFloat(b.dataset.n) === 1 ? null : 0.6));
+      bot.querySelectorAll("[data-n]").forEach(b => b.onclick = () => say(it.en, parseFloat(b.dataset.n) === 1 ? null : 0.6, b));
     } catch (e) {
       bot.classList.add("err");
       bot.textContent = e && e.code === "cancelled" ? "Cancelado." : (ERR[e && e.code] || "No se pudo responder ahora. Toca Enviar otra vez.");
