@@ -433,7 +433,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
       // The previous card scrolls up behind the blurred header.
       const target = Math.round(window.scrollY + cards[i].getBoundingClientRect().top - readingAnchor());
       window.scrollTo({ top: target, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-      setTimeout(() => { if (reading === run && Math.abs(window.scrollY - target) > 2) window.scrollTo(0, target) }, 650);  // some browsers skip smooth scrolling
+      setTimeout(() => { if (reading !== run) return; const off = cards[i].getBoundingClientRect().top - readingAnchor(); if (Math.abs(off) > 1) window.scrollBy(0, off) }, 650);  // measure again and correct (smooth scroll skipped, or the bar changed height)
     }
     const u = new SpeechSynthesisUtterance(items[i].en);
     const v = voice(); if (v) u.voice = v;
@@ -695,7 +695,8 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     view.style.paddingBottom = window.innerHeight + "px";  // room so the last cards can also reach that place
     const target = Math.round(window.scrollY + el.getBoundingClientRect().top - readingAnchor());
     window.scrollTo({ top: target, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-    setTimeout(() => { if (Math.abs(window.scrollY - target) > 2) window.scrollTo(0, target) }, 650);  // some browsers skip smooth scrolling
+    // after the scroll, measure again (the bar can change height meanwhile) and correct to the exact place
+    setTimeout(() => { const off = el.getBoundingClientRect().top - readingAnchor(); if (Math.abs(off) > 1) window.scrollBy(0, off) }, 650);
   }
   function flashCard(i) {
     const el = view.querySelectorAll(".card")[i];
