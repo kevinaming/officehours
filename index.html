@@ -657,11 +657,16 @@ COURSE CONTEXT:
   document.getElementById("home").onclick = () => { if (stack.length > 1) history.go(1 - stack.length) };
   // Voice picker: every English voice this browser has; the choice is remembered on this device.
   const vp = document.getElementById("voicePick");
+  // Joke voices and the old robotic ones (Eloquence) are left out of the menu.
+  const SKIP = /^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Grandma|Grandpa|Eddy|Flo|Reed|Rocko|Sandy|Shelley|Junior|Ralph|Fred|Kathy)\b/i;
+  const region = v => ({ US: "EE. UU.", GB: "Reino Unido", AU: "Australia", IE: "Irlanda", IN: "India", ZA: "Sudáfrica", CA: "Canadá", NZ: "N. Zelanda" })[(v.lang.split(/[-_]/)[1] || "").toUpperCase()] || v.lang;
   function fillVoices() {
-    const vs = enVoices();
+    const seen = new Set();
+    const vs = enVoices().filter(v => !SKIP.test(v.name) && !seen.has(v.name + v.lang) && seen.add(v.name + v.lang))
+      .sort((a, b) => (isEnUS(b) - isEnUS(a)) || a.name.localeCompare(b.name));
     if (!vs.length) { vp.hidden = true; return }
     const cur = voice();
-    vp.innerHTML = vs.map(v => `<option value="${esc(v.name)}"${cur && v.name === cur.name ? " selected" : ""}>Voz: ${esc(v.name)}</option>`).join("");
+    vp.innerHTML = vs.map(v => `<option value="${esc(v.name)}"${cur && v.name === cur.name ? " selected" : ""}>Voz: ${esc(v.name)} · ${esc(region(v))}</option>`).join("");
     vp.hidden = false;
   }
   vp.onchange = () => { opts.voice = vp.value; store.set("voice", vp.value); say("Hello. This is how I sound.") };
