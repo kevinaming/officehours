@@ -27,7 +27,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 button { font: inherit; color: inherit; cursor: pointer }
 button:focus-visible, select:focus-visible { outline: 3px solid var(--red); outline-offset: 2px }
 
-.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--navy); color: #fff;
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; color: #fff;
+  background: rgba(34, 50, 79, .82); -webkit-backdrop-filter: blur(18px) saturate(120%); backdrop-filter: blur(18px) saturate(120%);
   padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
 .bar-row { max-width: 980px; margin: 0 auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
 .navbtn { background: rgba(255,255,255,.12); border: 0; border-radius: 10px; padding: 10px 16px; font-weight: 700; color: #fff; min-height: 46px }
@@ -76,7 +77,8 @@ h1 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 4vw, 
 .act.play { background: var(--navy); color: #fff; border-color: var(--navy) }
 .play-all { margin: 4px 0 0 }
 /* the topic title and "Leer todo" stay fixed under the blue bar; the phrases slide underneath */
-.topic-head { position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--barH, 0px)); z-index: 4; background: var(--bg);
+.topic-head { margin-inline: -16px; padding-inline: 16px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--barH, 0px)); z-index: 4;
+  background: rgba(11, 17, 28, .72); -webkit-backdrop-filter: blur(18px) saturate(120%); backdrop-filter: blur(18px) saturate(120%);
   padding-block: 10px 12px; margin-bottom: 14px; border-bottom: 1.5px solid var(--line) }
 .topic-head h1 { margin: 2px 0 4px }
 /* floating control while the whole topic is read aloud */
