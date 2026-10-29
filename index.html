@@ -112,10 +112,25 @@ h1 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 4vw, 
 main.in-topic { padding-top: 14px }
 /* floating control while the whole topic is read aloud */
 .reader-bar { position: fixed; z-index: 16; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-  display: flex; align-items: center; gap: 12px; background: var(--red); color: #fff; border-radius: 999px; padding: 6px 18px 6px 6px;
+  display: flex; flex-direction: column; gap: 6px; background: var(--red); color: #fff; border-radius: 22px; padding: 8px 10px 10px;
   box-shadow: 0 6px 18px rgba(0,0,0,.35); max-width: calc(100% - 32px); white-space: nowrap }
-.reader-bar button { background: rgba(0,0,0,.25); color: #fff; border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 700; font-size: 16px; min-height: 46px }
-.reader-bar span { font-weight: 700; font-variant-numeric: tabular-nums }
+.reader-bar[hidden] { display: none }
+/* a small media player: back · play/pause · forward · phrase count · again · stop, with a track of the phrases below */
+.rb-row { display: flex; align-items: center; gap: 4px }
+.reader-bar button { display: inline-grid; place-items: center; background: transparent; color: #fff; border: 0; border-radius: 999px; width: 44px; height: 44px; padding: 0 }
+.reader-bar button:hover { background: rgba(0,0,0,.18) }
+.reader-bar #readerPlay { background: #fff; color: var(--red); width: 50px; height: 50px }
+.reader-bar #readerPlay svg { width: 22px; height: 22px }
+.reader-bar #readerStop { background: rgba(0,0,0,.25) }
+.reader-bar .rb-count { font-weight: 700; font-variant-numeric: tabular-nums; padding: 0 10px; min-width: 9.5em; text-align: center }
+.rb-track { display: flex; gap: 3px; padding: 0 6px }
+.rb-track button { flex: 1; width: auto; height: 14px; min-width: 6px; border-radius: 0; background: none; position: relative }
+.rb-track button::after { content: ""; position: absolute; left: 0; right: 0; top: 5px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.35) }
+.rb-track button.done::after { background: rgba(255,255,255,.75) }
+.rb-track button.now::after { background: #fff; top: 4px; height: 6px }
+.rb-track button:hover { background: none }
+.rb-track button:hover::after { background: #fff }
+@media (max-width: 480px) { .reader-bar .rb-count { min-width: 0; padding: 0 4px; font-size: 14px } .reader-bar button { width: 38px; height: 38px } .reader-bar #readerPlay { width: 44px; height: 44px } }
 .play-all { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
 .topic-head .speed { border-color: var(--line); color: var(--ink); background-color: var(--surface) }
 .topic-head .toggle { border-color: var(--line); color: var(--ink) }
@@ -262,7 +277,17 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     <div class="np-b"><button type="button" class="act" id="npCancel">Cancel</button><button type="button" class="act play" id="npGo">Go now ›</button></div>
   </div>
 </div>
-<div class="reader-bar" id="readerBar" hidden><button type="button" id="readerStop">■ Stop</button><span id="readerCount"></span><button type="button" id="readerNext">Next ›</button></div>
+<div class="reader-bar" id="readerBar" role="group" aria-label="Reading controls" hidden>
+  <div class="rb-row">
+    <button type="button" id="readerPrev" aria-label="Previous phrase" title="Previous (←)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="19 20 9 12 19 4 19 20" fill="currentColor"/><line x1="5" x2="5" y1="19" y2="5"/></svg></button>
+    <button type="button" id="readerPlay" aria-label="Pause" title="Pause (space)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/></svg></button>
+    <button type="button" id="readerNext" aria-label="Next phrase" title="Next (→)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor"/><line x1="19" x2="19" y1="5" y2="19"/></svg></button>
+    <span class="rb-count" id="readerCount"></span>
+    <button type="button" id="readerAgain" aria-label="Say this phrase again" title="Again"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
+    <button type="button" id="readerStop" aria-label="Stop reading" title="Stop (Esc)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="5" y="5" rx="2"/></svg></button>
+  </div>
+  <div class="rb-track" id="readerTrack"></div>
+</div>
 <div class="sel-say" id="selSay" hidden><button type="button" data-rate="">🔊 Listen</button><button type="button" data-rate="0.6">Slow</button></div>
 <button class="fab" id="fab" type="button" aria-haspopup="dialog">☰ Topics</button>
 <button class="fab-chat" id="fabChat" type="button" aria-haspopup="dialog" hidden>💬 Assistant</button>
@@ -351,6 +376,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   }
   // "Leer todo el tema": reads every phrase in order, scrolling each one into view and marking it.
   let reading = null;
+  const PLAY_ICON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>', PAUSE_ICON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/></svg>';
   // Karaoke on a card's English text: words light up as the voice says them (only voices that report words do this).
   function karaoke(card, text, u) {
     const el = card && card.querySelector(".en");
@@ -442,7 +468,9 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   function startReading(items, btn, sid, idx) {
     view.style.paddingBottom = window.innerHeight + "px";  // room so the last phrases can also reach the reading place
     speechSynthesis.cancel(); resetBtn();
-    reading = { btn, sid, idx, items, i: 0, timer: null, jumpTo: null, total: repeats() };
+    reading = { btn, sid, idx, items, i: 0, timer: null, gen: 0, undo: null, paused: false, total: repeats() };
+    document.getElementById("readerTrack").innerHTML = items.map((_, k) => `<button type="button" data-k="${k}" aria-label="Phrase ${k + 1}"></button>`).join("");
+    setPlayIcon(false);
     view.querySelectorAll(".card.heard").forEach(c => c.classList.remove("heard"));
     btn.innerHTML = "■ Stop reading"; btn.classList.add("stopping");
     document.getElementById("readerBar").hidden = false;
@@ -451,6 +479,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   function readAt(i, items, run, rep) {
     if (reading !== run) return;
     run.i = i; run.timer = null;
+    const gen = ++run.gen;
     const cards = view.querySelectorAll(".card");
     if (rep === 1) view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
     if (i >= items.length || !cards[i]) { offerNext(run.sid, run.idx, run); return }
@@ -458,6 +487,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     panelMark(i, "now");
     document.getElementById("readerCount").textContent =
       `Phrase ${i + 1} of ${items.length}` + (run.total > 1 ? ` · ${rep}/${run.total === Infinity ? "∞" : run.total}` : "");
+    document.querySelectorAll("#readerTrack button").forEach((b, k) => { b.classList.toggle("now", k === i); b.classList.toggle("done", k < i) });
     if (rep === 1) {
       // Each phrase takes the exact place of the first one: right under the fixed topic title, measured live on this screen.
       // The previous card scrolls up behind the blurred header.
@@ -465,16 +495,16 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
       window.scrollTo({ top: target, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
       setTimeout(() => { if (reading !== run) return; const off = cards[i].getBoundingClientRect().top - readingAnchor(); if (Math.abs(off) > 1) window.scrollBy(0, off) }, 650);  // measure again and correct (smooth scroll skipped, or the bar changed height)
     }
+    if (run.paused) return;  // paused: the phrase waits in its place until Play
     const u = new SpeechSynthesisUtterance(items[i].en);
     const v = voice(); if (v) u.voice = v;
     u.lang = "en-US"; u.rate = parseFloat(opts.speed);
-    const undo = karaoke(cards[i], items[i].en, u);
+    const undo = run.undo = karaoke(cards[i], items[i].en, u);
     let started = 0;
     u.onstart = () => { started = performance.now() };
     const finished = () => {
       if (undo) undo();
-      if (reading !== run) return;
-      if (run.jumpTo !== null) { const j = run.jumpTo; run.jumpTo = null; markHeard(cards[i], i); readAt(j, items, run, 1); return }
+      if (reading !== run || run.gen !== gen) return;  // stopped, or a player button already moved on
       const last = rep >= run.total;
       if (last) markHeard(cards[i], i);
       run.timer = setTimeout(() => last ? readAt(i + 1, items, run, 1) : readAt(i, items, run, rep + 1),
@@ -484,13 +514,35 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     u.onerror = finished;
     speechSynthesis.speak(u);
   }
-  // "Siguiente ›" in the red bar: skip the rest of this phrase's repetitions.
-  function readNext() {
+  // The player in the red bar. Every button cuts the current phrase and starts phrase j from its first repetition.
+  // Pause is a real stop of the voice (browsers pause unreliably); Play says the same phrase again from the start.
+  function readJump(j) {
     const run = reading;
     if (!run) return;
-    run.jumpTo = run.i + 1;
-    if (run.timer) { clearTimeout(run.timer); const j = run.jumpTo; run.jumpTo = null; markHeard(view.querySelectorAll(".card")[run.i], run.i); readAt(j, run.items, run, 1) }
-    else speechSynthesis.cancel();  // ends the current phrase; its handler moves on
+    hideNext();
+    run.gen++;  // the cut phrase's end handler sees this and does nothing
+    clearTimeout(run.timer); run.timer = null;
+    speechSynthesis.cancel();
+    if (run.undo) { run.undo(); run.undo = null }
+    const cards = view.querySelectorAll(".card");
+    if (j > run.i) for (let k = run.i; k < j; k++) markHeard(cards[k], k);
+    if (run.paused && j >= run.items.length) j = run.items.length - 1;
+    readAt(Math.max(0, j), run.items, run, 1);
+  }
+  const readNext = () => reading && readJump(reading.i + 1);
+  const readPrev = () => reading && readJump(reading.i - 1);
+  function setPlayIcon(paused) {
+    const b = document.getElementById("readerPlay");
+    b.innerHTML = paused ? PLAY_ICON : PAUSE_ICON;
+    b.setAttribute("aria-label", paused ? "Play" : "Pause");
+    b.title = paused ? "Play (space)" : "Pause (space)";
+  }
+  function readToggle() {
+    const run = reading;
+    if (!run) return;
+    run.paused = !run.paused;
+    setPlayIcon(run.paused);
+    readJump(Math.min(run.i, run.items.length - 1));
   }
 
   // The button that started the voice turns into "■ Detener" until the phrase ends; pressing it again stops.
@@ -924,6 +976,21 @@ COURSE CONTEXT:
   if (window.ResizeObserver) new ResizeObserver(setBarH).observe(document.querySelector(".bar"));  // the bar grows when its rows wrap or fonts load
   document.getElementById("readerStop").onclick = () => stopReading();
   document.getElementById("readerNext").onclick = () => readNext();
+  document.getElementById("readerPrev").onclick = () => readPrev();
+  document.getElementById("readerPlay").onclick = () => readToggle();
+  document.getElementById("readerAgain").onclick = () => reading && readJump(reading.i);
+  document.getElementById("readerTrack").onclick = e => { const b = e.target.closest("[data-k]"); if (b) readJump(+b.dataset.k) };
+  // Player keys while reading: space = play/pause, ← → = previous/next, Esc = stop (not while typing)
+  document.addEventListener("keydown", e => {
+    if (!reading || !document.getElementById("nextPop").hidden) return;
+    if (e.target.closest && e.target.closest("input, textarea, select, [contenteditable]")) return;
+    if (e.key === " ") { e.preventDefault(); readToggle() }
+    else if (e.key === "ArrowRight") { e.preventDefault(); readNext() }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); readPrev() }
+    else if (e.key === "Escape") stopReading();
+  }, true);
+  // a focused button would also take the space on key-up and click itself
+  document.addEventListener("keyup", e => { if (reading && e.key === " " && !(e.target.closest && e.target.closest("input, textarea, select, [contenteditable]"))) e.preventDefault() }, true);
 
   // Re-draw after a display option changes, keeping the same phrase in the same place on screen.
   function renderKeepPlace() {
