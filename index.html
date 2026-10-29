@@ -295,9 +295,16 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     speechSynthesis.cancel();
     r.btn.innerHTML = "▶ Leer todo el tema"; r.btn.classList.remove("stopping");
     document.getElementById("readerBar").hidden = true;
+    view.style.paddingBottom = "";
     view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
   }
+  function readingAnchor() {
+    const head = view.querySelector(".topic-head");
+    if (!head) return 0;
+    return head.getBoundingClientRect().bottom + parseFloat(getComputedStyle(head).marginBottom || 0);
+  }
   function startReading(items, btn) {
+    view.style.paddingBottom = window.innerHeight + "px";  // room so the last phrases can also reach the reading place
     speechSynthesis.cancel(); resetBtn();
     reading = { btn };
     btn.innerHTML = "■ Detener lectura"; btn.classList.add("stopping");
@@ -311,13 +318,9 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     if (i >= items.length || !cards[i]) { stopReading(); return }
     cards[i].classList.add("reading");
     document.getElementById("readerCount").textContent = `Frase ${i + 1} de ${items.length}`;
-    // centre the phrase in the space left between the fixed topic title and the floating bar
-    const head = view.querySelector(".topic-head"), rb = document.getElementById("readerBar");
-    const top = head ? head.getBoundingClientRect().bottom : 0;
-    const bottom = rb && !rb.hidden ? rb.getBoundingClientRect().top : window.innerHeight;
-    const r = cards[i].getBoundingClientRect();
-    const want = Math.max(top + 12, top + (bottom - top - r.height) / 2);
-    window.scrollBy({ top: r.top - want, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    // Each phrase takes the exact place of the first one: right under the fixed topic title, measured live on this screen.
+    // The previous card scrolls up behind the blurred header.
+    window.scrollBy({ top: cards[i].getBoundingClientRect().top - readingAnchor(), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     const u = new SpeechSynthesisUtterance(items[i].en);
     const v = voice(); if (v) u.voice = v;
     u.lang = "en-US"; u.rate = parseFloat(opts.speed);
@@ -515,7 +518,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   }
 
   function render() {
-    if (tts) { reading = null; speechSynthesis.cancel(); speakingBtn = null; document.getElementById("readerBar").hidden = true }
+    if (tts) { reading = null; speechSynthesis.cancel(); speakingBtn = null; document.getElementById("readerBar").hidden = true; view.style.paddingBottom = "" }
     const st = stack[stack.length - 1];
     document.getElementById("back").disabled = stack.length < 2;
     document.getElementById("back").style.visibility = stack.length < 2 ? "hidden" : "visible";
