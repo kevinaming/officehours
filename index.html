@@ -320,7 +320,9 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     document.getElementById("readerCount").textContent = `Frase ${i + 1} de ${items.length}`;
     // Each phrase takes the exact place of the first one: right under the fixed topic title, measured live on this screen.
     // The previous card scrolls up behind the blurred header.
-    window.scrollBy({ top: cards[i].getBoundingClientRect().top - readingAnchor(), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    const target = Math.round(window.scrollY + cards[i].getBoundingClientRect().top - readingAnchor());
+    window.scrollTo({ top: target, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    setTimeout(() => { if (reading === run && Math.abs(window.scrollY - target) > 2) window.scrollTo(0, target) }, 650);  // some browsers skip smooth scrolling
     const u = new SpeechSynthesisUtterance(items[i].en);
     const v = voice(); if (v) u.voice = v;
     u.lang = "en-US"; u.rate = parseFloat(opts.speed);
