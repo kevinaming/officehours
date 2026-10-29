@@ -691,7 +691,9 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     window.scrollTo(0, 0);
   }
   // Put a chosen card in the reading place: right under the fixed topic title, measured live (same rule as "Leer todo").
+  let lastPlaced = null;  // { el, at }: the card just put in the reading place, re-aligned if the bar changes height right after
   function placeCard(el) {
+    lastPlaced = { el, at: Date.now() };
     view.style.paddingBottom = window.innerHeight + "px";  // room so the last cards can also reach that place
     const target = Math.round(window.scrollY + el.getBoundingClientRect().top - readingAnchor());
     window.scrollTo({ top: target, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
@@ -880,7 +882,11 @@ COURSE CONTEXT:
     window.claude.use("sample").then(fn => { sampleFn = fn; applyChat() }).catch(() => {});
   }
 
-  function setBarH() { document.documentElement.style.setProperty("--barH", document.querySelector(".bar").offsetHeight + "px") }
+  function setBarH() {
+    document.documentElement.style.setProperty("--barH", document.querySelector(".bar").offsetHeight + "px");
+    const target = reading ? view.querySelector(".card.reading") : (lastPlaced && Date.now() - lastPlaced.at < 4000 && lastPlaced.el.isConnected ? lastPlaced.el : null);
+    if (target) requestAnimationFrame(() => { const off = target.getBoundingClientRect().top - readingAnchor(); if (Math.abs(off) > 1) window.scrollBy(0, off) });
+  }
   window.addEventListener("resize", setBarH);
   if (window.ResizeObserver) new ResizeObserver(setBarH).observe(document.querySelector(".bar"));  // the bar grows when its rows wrap or fonts load
   document.getElementById("readerStop").onclick = () => stopReading();
