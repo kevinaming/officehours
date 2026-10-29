@@ -128,16 +128,19 @@ main.in-topic { padding-top: 14px }
 /* In-page selector: the pill grows downward with depth and shows a plain list (no system pop-up) */
 .native-hidden { display: none !important }
 .drop { position: relative; display: inline-block; vertical-align: middle; font-size: 14px; z-index: 6; transition: transform .3s }
-.drop.open { transform: translateY(-2px) scale(1.02); z-index: 30 }
+.drop.open { z-index: 30 }
+.drop-box { position: relative }
+.drop.open .drop-box { position: absolute; top: 0; left: 0; width: max-content; min-width: 100%; transform: translateY(-2px) scale(1.02); transition: transform .3s }
+.drop.open .drop-head { width: 100%; max-width: none; justify-content: space-between }
 .drop-head { display: inline-flex; align-items: center; gap: 10px; min-height: 38px; max-width: 280px; padding: 6px 16px; color: inherit; font: inherit; font-size: 14px;
   background: transparent; border: 1.5px solid rgba(255,255,255,.35); border-radius: 19px; white-space: nowrap; transition: border-radius .25s, background .25s, box-shadow .3s }
 .drop-head span:first-child { overflow: hidden; text-overflow: ellipsis }
 .chev { flex: none; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .3s }
 .drop.open .chev { transform: translateY(2px) rotate(225deg) }
 .drop.open .drop-head { background: #1B2740; border-radius: 16px 16px 0 0; border-bottom-color: transparent; box-shadow: 0 -2px 14px rgba(0,0,0,.25) }
-.drop-list { position: absolute; left: 0; top: 100%; min-width: 100%; display: grid; max-height: 0; overflow: hidden; opacity: 0; background: #1B2740;
+.drop-list { position: absolute; left: 0; top: 100%; width: 100%; display: grid; max-height: 0; overflow: hidden; opacity: 0; background: #1B2740;
   border: 1.5px solid rgba(255,255,255,.35); border-top: 0; border-radius: 0 0 16px 16px; transition: max-height .4s cubic-bezier(.2,.9,.3,1.1), opacity .2s, box-shadow .3s; visibility: hidden }
-.drop.open .drop-list { max-height: 340px; overflow-y: auto; opacity: 1; visibility: visible; box-shadow: 0 16px 32px rgba(0,0,0,.45) }
+.drop.open .drop-list { position: static; max-height: 340px; overflow-y: auto; opacity: 1; visibility: visible; box-shadow: 0 16px 32px rgba(0,0,0,.45) }
 .drop-item { position: relative; text-align: left; white-space: nowrap; padding: 8px 18px 8px 32px; color: rgba(255,255,255,.72); font: inherit; font-size: 14px; background: transparent; border: 0 }
 .drop-item:hover, .drop-item:focus-visible { color: #fff; outline: none; text-decoration: underline; text-underline-offset: 3px }
 .drop-item.on { color: #fff; font-weight: 700 }
@@ -931,7 +934,12 @@ COURSE CONTEXT:
     b.onclick = () => { opts[key] = !opts[key]; store.set(key, opts[key]); b.setAttribute("aria-pressed", String(opts[key])); renderKeepPlace() };
   }
   // Turn a <select> into the in-page selector above; the <select> stays (hidden) as the source of the value.
-  function closeDrops(except) { document.querySelectorAll(".drop.open").forEach(x => { if (x !== except) x.classList.remove("open") }) }
+  function setOpen(d, on) {
+    if (on) { d.style.width = d.offsetWidth + "px"; d.style.height = d.offsetHeight + "px" }  // hold its place in the row
+    else { d.style.width = ""; d.style.height = "" }
+    d.classList.toggle("open", on);
+  }
+  function closeDrops(except) { document.querySelectorAll(".drop.open").forEach(x => { if (x !== except) setOpen(x, false) }) }
   function dropify(sel) {
     if (!sel) return;
     let d = sel.__drop;
@@ -939,14 +947,14 @@ COURSE CONTEXT:
       d = document.createElement("div"); d.className = "drop"; sel.after(d); sel.__drop = d; sel.classList.add("native-hidden");
       d.addEventListener("click", e => {
         const it = e.target.closest(".drop-item");
-        if (it) { sel.value = it.dataset.v; sel.dispatchEvent(new Event("change")); d.classList.remove("open"); dropify(sel); return }
-        const open = !d.classList.contains("open"); closeDrops(d); d.classList.toggle("open", open);
+        if (it) { sel.value = it.dataset.v; sel.dispatchEvent(new Event("change")); setOpen(d, false); dropify(sel); return }
+        const open = !d.classList.contains("open"); closeDrops(d); setOpen(d, open);
       });
     }
     d.hidden = sel.hidden;
     const cur = sel.selectedOptions[0];
-    d.innerHTML = `<button type="button" class="drop-head" aria-haspopup="listbox" aria-label="${esc(sel.getAttribute("aria-label") || "")}"><span>${esc(cur ? cur.textContent : "")}</span><span class="chev" aria-hidden="true"></span></button>
-      <div class="drop-list" role="listbox">${[...sel.options].map(o => `<button type="button" class="drop-item${o.selected ? " on" : ""}" role="option" aria-selected="${o.selected}" data-v="${esc(o.value)}">${esc(o.textContent.replace(/^(Voice|Repeat):\s*/, ""))}</button>`).join("")}</div>`;
+    d.innerHTML = `<div class="drop-box"><button type="button" class="drop-head" aria-haspopup="listbox" aria-label="${esc(sel.getAttribute("aria-label") || "")}"><span>${esc(cur ? cur.textContent : "")}</span><span class="chev" aria-hidden="true"></span></button>
+      <div class="drop-list" role="listbox">${[...sel.options].map(o => `<button type="button" class="drop-item${o.selected ? " on" : ""}" role="option" aria-selected="${o.selected}" data-v="${esc(o.value)}">${esc(o.textContent.replace(/^(Voice|Repeat):\s*/, ""))}</button>`).join("")}</div></div>`;
   }
   document.addEventListener("click", e => { if (!e.target.closest(".drop")) closeDrops() });
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrops() });
