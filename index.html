@@ -381,17 +381,18 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   let reading = null;
   const PLAY_ICON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>', PAUSE_ICON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/></svg>';
   // Karaoke on a card's English text: words light up as the voice says them (only voices that report words do this).
-  function karaoke(card, text, u) {
+  function karaoke(card, text, u, from = 0) {
     const el = card && card.querySelector(".en");
     if (!el || el.textContent !== text) return;
     let pos = 0;
     el.innerHTML = text.split(/(\s+)/).map(part => { const start = pos; pos += part.length; return /\S/.test(part) ? `<span class="w" data-s="${start}">${esc(part)}</span>` : part }).join("");
     const words = [...el.querySelectorAll(".w")];
+    if (from) { el.classList.add("karaoke"); words.forEach(w => w.classList.toggle("said", +w.dataset.s < from)) }  // going on after a pause
     u.onboundary = e => {
       if (e.name && e.name !== "word") return;
       el.classList.add("karaoke");
       let cur = null;
-      words.forEach(w => { const said = +w.dataset.s <= e.charIndex; w.classList.toggle("said", said); w.classList.remove("cur"); if (said) cur = w });
+      words.forEach(w => { const said = +w.dataset.s <= from + e.charIndex; w.classList.toggle("said", said); w.classList.remove("cur"); if (said) cur = w });
       if (cur) cur.classList.add("cur");
     };
     return () => { el.classList.remove("karaoke"); words.forEach(w => w.classList.remove("said", "cur")) };
@@ -454,7 +455,8 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     hideNext();
     if (!reading) return;
     const r = reading; reading = null;
-    clearTimeout(r.timer);
+    clearTimeout(r.timer); cancelAnimationFrame(fillRaf);
+    if (r.undo) r.undo();
     speechSynthesis.cancel();
     r.btn.innerHTML = "▶ Read whole topic"; r.btn.classList.remove("stopping");
     document.getElementById("readerBar").hidden = true;
@@ -479,20 +481,20 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     document.getElementById("readerBar").hidden = false;
     readAt(0, items, reading, 1);
   }
-  function readAt(i, items, run, rep) {
+  function readAt(i, items, run, rep, from = 0) {
     if (reading !== run) return;
-    run.i = i; run.timer = null;
+    run.i = i; run.rep = rep; run.timer = null; run.resume = null;
     const gen = ++run.gen;
     const cards = view.querySelectorAll(".card");
-    if (rep === 1) view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
+    if (rep === 1 && !from) view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
     if (i >= items.length || !cards[i]) { offerNext(run.sid, run.idx, run); return }
     cards[i].classList.add("reading"); cards[i].classList.remove("heard");
     panelMark(i, "now");
     document.getElementById("readerCount").textContent =
       `Phrase ${i + 1} of ${items.length}` + (run.total > 1 ? ` · ${rep}/${run.total === Infinity ? "∞" : run.total}` : "");
     document.querySelectorAll("#readerTrack button").forEach((b, k) => { b.classList.toggle("now", k === i); b.classList.toggle("done", k < i) });
-    cancelAnimationFrame(fillRaf); setFill(0);
-    if (rep === 1) {
+    cancelAnimationFrame(fillRaf); setFill(from / items[i].en.length);
+    if (rep === 1 && !from) {
       // Each phrase takes the exact place of the first one: right under the fixed topic title, measured live on this screen.
       // The previous card scrolls up behind the blurred header.
       const target = Math.round(window.scrollY + cards[i].getBoundingClientRect().top - readingAnchor());
@@ -500,28 +502,32 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
       setTimeout(() => { if (reading !== run) return; const off = cards[i].getBoundingClientRect().top - readingAnchor(); if (Math.abs(off) > 1) window.scrollBy(0, off) }, 650);  // measure again and correct (smooth scroll skipped, or the bar changed height)
     }
     if (run.paused) return;  // paused: the phrase waits in its place until Play
-    const u = new SpeechSynthesisUtterance(items[i].en);
+    // after a pause the voice says only the rest of the phrase, from the word where it stopped
+    const text = items[i].en;
+    const u = new SpeechSynthesisUtterance(text.slice(from));
     const v = voice(); if (v) u.voice = v;
     u.lang = "en-US"; u.rate = parseFloat(opts.speed);
-    const undo = run.undo = karaoke(cards[i], items[i].en, u);
-    runFill(u, items[i].en, run, gen);
+    const undo = run.undo = karaoke(cards[i], text, u, from);
+    run.from = from; run.pos = from; run.heardWord = false; run.t0 = null;
+    u.addEventListener("boundary", e => { if (e.name && e.name !== "word") return; run.pos = from + e.charIndex; run.heardWord = true });
+    runFill(u, text, run, gen, from);
     let started = 0;
     u.onstart = () => { started = performance.now() };
     const finished = () => {
+      if (reading !== run || run.gen !== gen) return;  // stopped, paused, or a player button already moved on
       if (undo) undo();
-      if (reading !== run || run.gen !== gen) return;  // stopped, or a player button already moved on
       cancelAnimationFrame(fillRaf); setFill(1);
       const last = rep >= run.total;
       if (last) markHeard(cards[i], i);
-      run.timer = setTimeout(() => last ? readAt(i + 1, items, run, 1) : readAt(i, items, run, rep + 1),
+      run.after = last ? { i: i + 1, rep: 1 } : { i, rep: rep + 1 };
+      run.timer = setTimeout(() => readAt(run.after.i, items, run, run.after.rep),
         pauseAfter(started ? performance.now() - started : 1500));
     };
     u.onend = finished;
     u.onerror = finished;
     speechSynthesis.speak(u);
   }
-  // The player in the red bar. Every button cuts the current phrase and starts phrase j from its first repetition.
-  // Pause is a real stop of the voice (browsers pause unreliably); Play says the same phrase again from the start.
+  // The player in the red bar. Back, forward, the track and ↻ cut the current phrase and start phrase j from its beginning.
   function readJump(j) {
     const run = reading;
     if (!run) return;
@@ -539,14 +545,15 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   // pushed forward by the word the voice reports (when it does); it holds just short of the end until the voice finishes.
   let fillRaf = 0;
   function setFill(p) { const el = document.querySelector("#readerTrack .now i"); if (el) el.style.width = (p * 100).toFixed(1) + "%" }
-  function runFill(u, text, run, gen) {
-    let t0 = null, said = 0;
-    const est = Math.max(900, text.split(/\s+/).length * 60000 / (165 * (u.rate || 1)));
-    u.addEventListener("start", () => { t0 = performance.now() });
-    u.addEventListener("boundary", e => { said = Math.max(said, e.charIndex / text.length) });
+  function runFill(u, text, run, gen, from = 0) {
+    let said = 0;
+    const base = from / text.length;
+    run.est = Math.max(600, text.slice(from).split(/\s+/).length * 60000 / (165 * (u.rate || 1)));
+    u.addEventListener("start", () => { run.t0 = performance.now() });
+    u.addEventListener("boundary", e => { said = Math.max(said, (from + e.charIndex) / text.length) });
     const tick = () => {
       if (reading !== run || run.gen !== gen) return;
-      if (t0 !== null) setFill(Math.min(.97, Math.max((performance.now() - t0) / est, said)));
+      if (run.t0 !== null) setFill(Math.min(.97, Math.max(base + (performance.now() - run.t0) / run.est * (1 - base), said)));
       fillRaf = requestAnimationFrame(tick);
     };
     fillRaf = requestAnimationFrame(tick);
@@ -559,12 +566,38 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     b.setAttribute("aria-label", paused ? "Play" : "Pause");
     b.title = paused ? "Play (space)" : "Pause (space)";
   }
+  // Where Play goes on: the word after the last one said. The voice reports each word it starts (most voices);
+  // if it doesn't, the place is worked out from the time spent, at the start of the word it was on.
+  function resumePoint(run) {
+    const text = run.items[run.i].en;
+    let c;
+    if (run.heardWord) {
+      const nx = text.slice(run.pos).search(/\s\S/);
+      c = nx < 0 ? text.length : run.pos + nx + 1;
+    } else {
+      const p = run.t0 === null ? 0 : Math.min(1, (performance.now() - run.t0) / run.est);
+      c = run.from + Math.floor(p * (text.length - run.from));
+      while (c > run.from && /\S/.test(text[c - 1])) c--;  // back to the start of that word
+    }
+    if (c >= text.length) return run.rep >= run.total ? { i: run.i + 1, rep: 1, from: 0, heard: true } : { i: run.i, rep: run.rep + 1, from: 0 };
+    return { i: run.i, rep: run.rep, from: c };
+  }
+  // Pause stops the voice and keeps the place (the words already said stay lit); Play goes on from the next word.
+  // (The browsers' own pause is unreliable, so the voice is cut and the rest of the phrase is said again from there.)
   function readToggle() {
     const run = reading;
     if (!run) return;
-    run.paused = !run.paused;
-    setPlayIcon(run.paused);
-    readJump(Math.min(run.i, run.items.length - 1));
+    if (!run.paused) {
+      run.paused = true; setPlayIcon(true); hideNext();
+      if (run.timer) { clearTimeout(run.timer); run.timer = null; run.resume = { ...run.after, from: 0 } }  // between phrases
+      else { run.resume = resumePoint(run); run.gen++; speechSynthesis.cancel(); cancelAnimationFrame(fillRaf) }
+      return;
+    }
+    run.paused = false; setPlayIcon(false);
+    const r = run.resume || { i: run.i, rep: 1, from: 0 };
+    run.resume = null;
+    if (r.heard) markHeard(view.querySelectorAll(".card")[r.i - 1], r.i - 1);
+    readAt(r.i, run.items, run, r.rep, r.from);
   }
 
   // The button that started the voice turns into "■ Detener" until the phrase ends; pressing it again stops.
