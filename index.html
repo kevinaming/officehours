@@ -108,6 +108,10 @@ main.in-topic { padding-top: 0 }
   box-shadow: 0 6px 18px rgba(0,0,0,.35); max-width: calc(100% - 32px); white-space: nowrap }
 .reader-bar button { background: rgba(0,0,0,.25); color: #fff; border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 700; font-size: 16px; min-height: 46px }
 .reader-bar span { font-weight: 700; font-variant-numeric: tabular-nums }
+.play-all { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+.topic-head .speed { border-color: var(--line); color: var(--ink); background-color: var(--surface) }
+.topic-head .toggle { border-color: var(--line); color: var(--ink) }
+.topic-head .toggle[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink) }
 .card.reading { border-color: var(--red); box-shadow: 0 0 0 3px rgba(255,90,110,.25) }
 .act.stopping, .sel-say button.stopping { background: var(--red); color: #fff; border-color: var(--red) }
 .hidden-en { filter: blur(7px); user-select: none; cursor: pointer }
@@ -226,7 +230,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     <div class="np-b"><button type="button" class="act" id="npCancel">Cancelar</button><button type="button" class="act play" id="npGo">Ir ahora ›</button></div>
   </div>
 </div>
-<div class="reader-bar" id="readerBar" hidden><button type="button" id="readerStop">■ Detener</button><span id="readerCount"></span></div>
+<div class="reader-bar" id="readerBar" hidden><button type="button" id="readerStop">■ Detener</button><span id="readerCount"></span><button type="button" id="readerNext">Siguiente ›</button></div>
 <div class="sel-say" id="selSay" hidden><button type="button" data-rate="">🔊 Escuchar</button><button type="button" data-rate="0.6">Lento</button></div>
 <button class="fab" id="fab" type="button" aria-haspopup="dialog">☰ Temas</button>
 <button class="fab-chat" id="fabChat" type="button" aria-haspopup="dialog" hidden>💬 Asistente</button>
@@ -262,7 +266,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     get(k, d) { try { const v = localStorage.getItem("oh_" + k); return v === null ? d : JSON.parse(v) } catch (e) { return d } },
     set(k, v) { try { localStorage.setItem("oh_" + k, JSON.stringify(v)) } catch (e) {} }
   };
-  const opts = { voice: store.get("voice", ""), es: store.get("es", true), practice: store.get("practice", false), pron: store.get("pron", true), speed: store.get("speed", "0.85") };
+  const opts = { repeat: store.get("repeat", "1"), echo: store.get("echo", false), voice: store.get("voice", ""), es: store.get("es", true), practice: store.get("practice", false), pron: store.get("pron", true), speed: store.get("speed", "0.85") };
   let stack = [];  // navigation history: [{v:'home'}, {v:'section', s}, {v:'topic', s, t}]
   const tts = "speechSynthesis" in window;
 
@@ -372,6 +376,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     hideNext();
     if (!reading) return;
     const r = reading; reading = null;
+    clearTimeout(r.timer);
     speechSynthesis.cancel();
     r.btn.innerHTML = "▶ Leer todo el tema"; r.btn.classList.remove("stopping");
     document.getElementById("readerBar").hidden = true;
@@ -383,40 +388,68 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     if (!head) return 0;
     return head.getBoundingClientRect().bottom + parseFloat(getComputedStyle(head).marginBottom || 0);
   }
+  const repeats = () => opts.repeat === "inf" ? Infinity : parseInt(opts.repeat, 10) || 1;
+  // Pause after a phrase: in echo mode as long as the phrase itself, so you can say it back.
+  const pauseAfter = ms => opts.echo ? Math.max(1200, ms + 400) : 700;
+
   function startReading(items, btn, sid, idx) {
     view.style.paddingBottom = window.innerHeight + "px";  // room so the last phrases can also reach the reading place
     speechSynthesis.cancel(); resetBtn();
-    reading = { btn, sid, idx };
+    reading = { btn, sid, idx, items, i: 0, timer: null, jumpTo: null, total: repeats() };
     view.querySelectorAll(".card.heard").forEach(c => c.classList.remove("heard"));
     btn.innerHTML = "■ Detener lectura"; btn.classList.add("stopping");
     document.getElementById("readerBar").hidden = false;
-    readAt(0, items, reading);
+    readAt(0, items, reading, 1);
   }
-  function readAt(i, items, run) {
+  function readAt(i, items, run, rep) {
     if (reading !== run) return;
+    run.i = i; run.timer = null;
     const cards = view.querySelectorAll(".card");
-    view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
+    if (rep === 1) view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
     if (i >= items.length || !cards[i]) { offerNext(run.sid, run.idx, run); return }
-    cards[i].classList.add("reading");
+    cards[i].classList.add("reading"); cards[i].classList.remove("heard");
     panelMark(i, "now");
-    document.getElementById("readerCount").textContent = `Frase ${i + 1} de ${items.length}`;
-    // Each phrase takes the exact place of the first one: right under the fixed topic title, measured live on this screen.
-    // The previous card scrolls up behind the blurred header.
-    const target = Math.round(window.scrollY + cards[i].getBoundingClientRect().top - readingAnchor());
-    window.scrollTo({ top: target, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-    setTimeout(() => { if (reading === run && Math.abs(window.scrollY - target) > 2) window.scrollTo(0, target) }, 650);  // some browsers skip smooth scrolling
+    document.getElementById("readerCount").textContent =
+      `Frase ${i + 1} de ${items.length}` + (run.total > 1 ? ` · ${rep}/${run.total === Infinity ? "∞" : run.total}` : "");
+    if (rep === 1) {
+      // Each phrase takes the exact place of the first one: right under the fixed topic title, measured live on this screen.
+      // The previous card scrolls up behind the blurred header.
+      const target = Math.round(window.scrollY + cards[i].getBoundingClientRect().top - readingAnchor());
+      window.scrollTo({ top: target, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      setTimeout(() => { if (reading === run && Math.abs(window.scrollY - target) > 2) window.scrollTo(0, target) }, 650);  // some browsers skip smooth scrolling
+    }
     const u = new SpeechSynthesisUtterance(items[i].en);
     const v = voice(); if (v) u.voice = v;
     u.lang = "en-US"; u.rate = parseFloat(opts.speed);
     const undo = karaoke(cards[i], items[i].en, u);
-    u.onend = () => { if (undo) undo(); markHeard(cards[i], i); if (reading === run) setTimeout(() => readAt(i + 1, items, run), 700) };
-    u.onerror = () => { if (undo) undo(); if (reading === run) stopReading() };
+    let started = 0;
+    u.onstart = () => { started = performance.now() };
+    const finished = () => {
+      if (undo) undo();
+      if (reading !== run) return;
+      if (run.jumpTo !== null) { const j = run.jumpTo; run.jumpTo = null; markHeard(cards[i], i); readAt(j, items, run, 1); return }
+      const last = rep >= run.total;
+      if (last) markHeard(cards[i], i);
+      run.timer = setTimeout(() => last ? readAt(i + 1, items, run, 1) : readAt(i, items, run, rep + 1),
+        pauseAfter(started ? performance.now() - started : 1500));
+    };
+    u.onend = finished;
+    u.onerror = finished;
     speechSynthesis.speak(u);
+  }
+  // "Siguiente ›" in the red bar: skip the rest of this phrase's repetitions.
+  function readNext() {
+    const run = reading;
+    if (!run) return;
+    run.jumpTo = run.i + 1;
+    if (run.timer) { clearTimeout(run.timer); const j = run.jumpTo; run.jumpTo = null; markHeard(view.querySelectorAll(".card")[run.i], run.i); readAt(j, run.items, run, 1) }
+    else speechSynthesis.cancel();  // ends the current phrase; its handler moves on
   }
 
   // The button that started the voice turns into "■ Detener" until the phrase ends; pressing it again stops.
   let speakingBtn = null;
   function resetBtn() {
+    if (speakingBtn) clearTimeout(speakingBtn.__t);
     if (speakingBtn) { speakingBtn.innerHTML = speakingBtn.dataset.label; speakingBtn.classList.remove("stopping"); speakingBtn = null }
   }
   function say(text, rate, btn) {
@@ -425,19 +458,34 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     const same = btn && btn === speakingBtn;
     speechSynthesis.cancel(); resetBtn();
     if (same) return;  // second press = stop
-    const u = new SpeechSynthesisUtterance(text);
-    const v = voice(); if (v) u.voice = v;
-    u.lang = "en-US"; u.rate = rate || parseFloat(opts.speed);
-    if (btn) {
-      btn.dataset.label = btn.innerHTML; btn.innerHTML = "■ Detener"; btn.classList.add("stopping"); speakingBtn = btn;
-      const card = btn.closest(".card"), undo = card ? karaoke(card, text, u) : null;
-      const i = card ? [...view.querySelectorAll(".card")].indexOf(card) : -1;
+    const total = btn ? repeats() : 1;
+    const card = btn ? btn.closest(".card") : null;
+    const i = card ? [...view.querySelectorAll(".card")].indexOf(card) : -1;
+    if (btn) { btn.dataset.label = btn.innerHTML; btn.innerHTML = "■ Detener"; btn.classList.add("stopping"); speakingBtn = btn }
+    const once = n => {
+      if (btn && speakingBtn !== btn) return;
+      const u = new SpeechSynthesisUtterance(text);
+      const v = voice(); if (v) u.voice = v;
+      u.lang = "en-US"; u.rate = rate || parseFloat(opts.speed);
+      if (!btn) { speechSynthesis.speak(u); return }
+      const undo = card ? karaoke(card, text, u) : null;
       if (undo) panelMark(i, "now");
-      u.onend = () => { if (undo) { undo(); markHeard(card, i) } if (speakingBtn === btn) resetBtn() };
+      if (total > 1) btn.innerHTML = `■ Detener · ${n}/${total === Infinity ? "∞" : total}`;
+      let started = 0;
+      u.onstart = () => { started = performance.now() };
+      u.onend = () => {
+        if (undo) undo();
+        if (speakingBtn !== btn) return;
+        if (n < total) { btn.__t = setTimeout(() => once(n + 1), pauseAfter(started ? performance.now() - started : 1500)); return }
+        if (undo) markHeard(card, i);
+        resetBtn();
+      };
       u.onerror = () => { if (undo) undo(); if (speakingBtn === btn) resetBtn() };
-    }
-    speechSynthesis.speak(u);
+      speechSynthesis.speak(u);
+    };
+    once(1);
   }
+
 
   // Each view is a browser history entry, so the browser's own back gesture and button work too.
   function go(state) { stack.push(state); history.pushState({ depth: stack.length }, ""); render() }
@@ -576,7 +624,9 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
       <div class="topic-head">
         <div class="eyebrow">${esc(s.title)}</div>
         <h1>${esc(t.title)}</h1>
-        ${tts ? `<div class="actions play-all"><button class="act play" id="playAll" type="button">▶ Leer todo el tema</button></div>` : ""}
+        ${tts ? `<div class="actions play-all"><button class="act play" id="playAll" type="button">▶ Leer todo el tema</button>
+          <select class="speed" id="repeatPick" aria-label="Repetir cada frase">${["1", "2", "3", "5", "inf"].map(v => `<option value="${v}"${opts.repeat === v ? " selected" : ""}>Repetir: ${v === "inf" ? "∞" : v + "×"}</option>`).join("")}</select>
+          <button class="toggle" id="echoBtn" type="button" aria-pressed="${opts.echo}" title="Después de cada frase, una pausa del mismo largo para que la repitas">🗣 Modo eco</button></div>` : ""}
       </div>
       <div class="cards">${t.items.map((it, i) => card(it, i)).join("")}</div>
       <div class="next">
@@ -587,6 +637,9 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     view.querySelectorAll("[data-jump]").forEach(b => b.onclick = () => { stack[stack.length - 1] = { v: "topic", s: sid, t: b.dataset.jump }; history.replaceState({ depth: stack.length }, ""); render() });
     const pa = document.getElementById("playAll");
     if (pa) pa.onclick = () => { if (reading) stopReading(); else startReading(t.items, pa, sid, idx) };
+    const rp = document.getElementById("repeatPick"), eb = document.getElementById("echoBtn");
+    if (rp) rp.onchange = () => { opts.repeat = rp.value; store.set("repeat", rp.value); if (reading) reading.total = repeats() };
+    if (eb) eb.onclick = () => { opts.echo = !opts.echo; store.set("echo", opts.echo); eb.setAttribute("aria-pressed", String(opts.echo)) };
     view.querySelectorAll("[data-say]").forEach(b => b.onclick = () => { const it = t.items[+b.dataset.say]; say(b.dataset.kind === "q" ? it.q : it.en, b.dataset.rate ? parseFloat(b.dataset.rate) : null, b) });
     view.querySelectorAll(".hidden-en").forEach(el => el.onclick = () => { el.classList.remove("hidden-en"); const h = el.nextElementSibling; if (h && h.classList.contains("reveal-hint")) h.remove() });
   }
@@ -806,6 +859,7 @@ COURSE CONTEXT:
   window.addEventListener("resize", setBarH);
   if (window.ResizeObserver) new ResizeObserver(setBarH).observe(document.querySelector(".bar"));  // the bar grows when its rows wrap or fonts load
   document.getElementById("readerStop").onclick = () => stopReading();
+  document.getElementById("readerNext").onclick = () => readNext();
 
   // Re-draw after a display option changes, keeping the same phrase in the same place on screen.
   function renderKeepPlace() {
