@@ -946,7 +946,7 @@ COURSE CONTEXT:
     d.hidden = sel.hidden;
     const cur = sel.selectedOptions[0];
     d.innerHTML = `<button type="button" class="drop-head" aria-haspopup="listbox" aria-label="${esc(sel.getAttribute("aria-label") || "")}"><span>${esc(cur ? cur.textContent : "")}</span><span class="chev" aria-hidden="true"></span></button>
-      <div class="drop-list" role="listbox">${[...sel.options].map(o => `<button type="button" class="drop-item${o.selected ? " on" : ""}" role="option" aria-selected="${o.selected}" data-v="${esc(o.value)}">${esc(o.textContent)}</button>`).join("")}</div>`;
+      <div class="drop-list" role="listbox">${[...sel.options].map(o => `<button type="button" class="drop-item${o.selected ? " on" : ""}" role="option" aria-selected="${o.selected}" data-v="${esc(o.value)}">${esc(o.textContent.replace(/^(Voice|Repeat):\s*/, ""))}</button>`).join("")}</div>`;
   }
   document.addEventListener("click", e => { if (!e.target.closest(".drop")) closeDrops() });
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrops() });
