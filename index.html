@@ -81,6 +81,9 @@ h1 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 4vw, 
   background: rgba(11, 17, 28, .72); -webkit-backdrop-filter: blur(18px) saturate(120%); backdrop-filter: blur(18px) saturate(120%);
   padding-block: 10px 12px; margin-bottom: 14px; border-bottom: 1.5px solid var(--line) }
 .topic-head h1 { margin: 2px 0 4px }
+/* inside a topic the header starts right under the bar, so it never moves when you scroll */
+main.in-topic { padding-top: 0 }
+.topic-head { padding-top: 22px }
 /* floating control while the whole topic is read aloud */
 .reader-bar { position: fixed; z-index: 16; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   display: flex; align-items: center; gap: 12px; background: var(--red); color: #fff; border-radius: 999px; padding: 6px 18px 6px 6px;
@@ -519,6 +522,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     if (st.v === "home") renderHome();
     else if (st.v === "section") renderSection(st.s);
     else renderTopic(st.s, st.t);
+    view.classList.toggle("in-topic", st.v === "topic");
     renderChips(st);
     setBarH();
     if (!sheet.hidden) renderSheet();
