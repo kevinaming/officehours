@@ -306,7 +306,13 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     if (i >= items.length || !cards[i]) { stopReading(); return }
     cards[i].classList.add("reading");
     document.getElementById("readerCount").textContent = `Frase ${i + 1} de ${items.length}`;
-    cards[i].scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    // centre the phrase in the space left between the fixed topic title and the floating bar
+    const head = view.querySelector(".topic-head"), rb = document.getElementById("readerBar");
+    const top = head ? head.getBoundingClientRect().bottom : 0;
+    const bottom = rb && !rb.hidden ? rb.getBoundingClientRect().top : window.innerHeight;
+    const r = cards[i].getBoundingClientRect();
+    const want = Math.max(top + 12, top + (bottom - top - r.height) / 2);
+    window.scrollBy({ top: r.top - want, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     const u = new SpeechSynthesisUtterance(items[i].en);
     const v = voice(); if (v) u.voice = v;
     u.lang = "en-US"; u.rate = parseFloat(opts.speed);
