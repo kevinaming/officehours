@@ -202,18 +202,18 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
 <body>
 <header class="bar">
   <div class="bar-row">
-    <button class="navbtn" id="back" type="button">‹ Atrás</button>
+    <button class="navbtn" id="back" type="button">‹ Back</button>
     <div class="crumb" id="crumb">Inicio</div>
-    <button class="navbtn" id="home" type="button">Inicio</button>
+    <button class="navbtn" id="home" type="button">Home</button>
   </div>
   <div class="opts">
-    <button class="toggle" id="optEs" type="button" aria-pressed="true">Español</button>
-    <button class="toggle" id="optPractice" type="button" aria-pressed="false">Modo práctica</button>
-    <button class="toggle" id="optPron" type="button" aria-pressed="true">Pronunciación</button>
+    <button class="toggle" id="optEs" type="button" aria-pressed="true">Spanish</button>
+    <button class="toggle" id="optPractice" type="button" aria-pressed="false">Practice mode</button>
+    <button class="toggle" id="optPron" type="button" aria-pressed="true">Pronunciation</button>
     <select class="speed" id="speed" aria-label="Velocidad de la voz">
-      <option value="0.7">Voz lenta</option>
-      <option value="0.85" selected>Voz normal</option>
-      <option value="1">Voz rápida</option>
+      <option value="0.7">Slow voice</option>
+      <option value="0.85" selected>Normal voice</option>
+      <option value="1">Fast voice</option>
     </select>
     <select class="speed" id="voicePick" aria-label="Voz" hidden></select>
   </div>
@@ -225,16 +225,16 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
 <div class="pull-hint" id="pullHint" aria-hidden="true">↻</div>
 <div class="next-pop" id="nextPop" role="dialog" aria-live="polite" hidden>
   <div class="np-card">
-    <span class="np-t">Siguiente tema</span>
+    <span class="np-t">Next topic</span>
     <span class="np-h" id="npTitle"></span>
     <svg class="np-ring" width="76" height="76" viewBox="0 0 76 76" aria-hidden="true"><circle cx="38" cy="38" r="30" fill="none" stroke="var(--line)" stroke-width="6"/><circle id="npArc" cx="38" cy="38" r="30" fill="none" stroke="var(--red)" stroke-width="6" stroke-linecap="round" transform="rotate(-90 38 38)" stroke-dasharray="188.5" stroke-dashoffset="188.5"/><text x="38" y="46" text-anchor="middle" font-size="26" font-weight="700" fill="var(--ink)">›</text></svg>
-    <div class="np-b"><button type="button" class="act" id="npCancel">Cancelar</button><button type="button" class="act play" id="npGo">Ir ahora ›</button></div>
+    <div class="np-b"><button type="button" class="act" id="npCancel">Cancel</button><button type="button" class="act play" id="npGo">Go now ›</button></div>
   </div>
 </div>
-<div class="reader-bar" id="readerBar" hidden><button type="button" id="readerStop">■ Detener</button><span id="readerCount"></span><button type="button" id="readerNext">Siguiente ›</button></div>
-<div class="sel-say" id="selSay" hidden><button type="button" data-rate="">🔊 Escuchar</button><button type="button" data-rate="0.6">Lento</button></div>
-<button class="fab" id="fab" type="button" aria-haspopup="dialog">☰ Temas</button>
-<button class="fab-chat" id="fabChat" type="button" aria-haspopup="dialog" hidden>💬 Asistente</button>
+<div class="reader-bar" id="readerBar" hidden><button type="button" id="readerStop">■ Stop</button><span id="readerCount"></span><button type="button" id="readerNext">Next ›</button></div>
+<div class="sel-say" id="selSay" hidden><button type="button" data-rate="">🔊 Listen</button><button type="button" data-rate="0.6">Slow</button></div>
+<button class="fab" id="fab" type="button" aria-haspopup="dialog">☰ Topics</button>
+<button class="fab-chat" id="fabChat" type="button" aria-haspopup="dialog" hidden>💬 Assistant</button>
 <div class="chat" id="chat" role="dialog" aria-label="Asistente para responder" hidden>
   <div class="chat-body">
     <div class="chat-head">
@@ -396,7 +396,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     const r = reading; reading = null;
     clearTimeout(r.timer);
     speechSynthesis.cancel();
-    r.btn.innerHTML = "▶ Leer todo el tema"; r.btn.classList.remove("stopping");
+    r.btn.innerHTML = "▶ Read whole topic"; r.btn.classList.remove("stopping");
     document.getElementById("readerBar").hidden = true;
     view.style.paddingBottom = "";
     view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
@@ -413,7 +413,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     speechSynthesis.cancel(); resetBtn();
     reading = { btn, sid, idx, items, i: 0, timer: null, jumpTo: null, total: repeats() };
     view.querySelectorAll(".card.heard").forEach(c => c.classList.remove("heard"));
-    btn.innerHTML = "■ Detener lectura"; btn.classList.add("stopping");
+    btn.innerHTML = "■ Stop reading"; btn.classList.add("stopping");
     document.getElementById("readerBar").hidden = false;
     readAt(0, items, reading, 1);
   }
@@ -426,7 +426,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     cards[i].classList.add("reading"); cards[i].classList.remove("heard");
     panelMark(i, "now");
     document.getElementById("readerCount").textContent =
-      `Frase ${i + 1} de ${items.length}` + (run.total > 1 ? ` · ${rep}/${run.total === Infinity ? "∞" : run.total}` : "");
+      `Phrase ${i + 1} of ${items.length}` + (run.total > 1 ? ` · ${rep}/${run.total === Infinity ? "∞" : run.total}` : "");
     if (rep === 1) {
       // Each phrase takes the exact place of the first one: right under the fixed topic title, measured live on this screen.
       // The previous card scrolls up behind the blurred header.
@@ -477,7 +477,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     const total = btn ? repeats() : 1;
     const card = btn ? btn.closest(".card") : null;
     const i = card ? [...view.querySelectorAll(".card")].indexOf(card) : -1;
-    if (btn) { btn.dataset.label = btn.innerHTML; btn.innerHTML = "■ Detener"; btn.classList.add("stopping"); speakingBtn = btn }
+    if (btn) { btn.dataset.label = btn.innerHTML; btn.innerHTML = "■ Stop"; btn.classList.add("stopping"); speakingBtn = btn }
     const once = n => {
       if (btn && speakingBtn !== btn) return;
       const u = new SpeechSynthesisUtterance(text);
@@ -486,7 +486,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
       if (!btn) { speechSynthesis.speak(u); return }
       const undo = card ? karaoke(card, text, u) : null;
       if (undo) panelMark(i, "now");
-      if (total > 1) btn.innerHTML = `■ Detener · ${n}/${total === Infinity ? "∞" : total}`;
+      if (total > 1) btn.innerHTML = `■ Stop · ${n}/${total === Infinity ? "∞" : total}`;
       let started = 0;
       u.onstart = () => { started = performance.now() };
       u.onend = () => {
@@ -640,9 +640,9 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
       <div class="topic-head">
         <div class="eyebrow">${esc(s.title)}</div>
         <h1>${esc(t.title)}</h1>
-        ${tts ? `<div class="actions play-all"><button class="act play" id="playAll" type="button">▶ Leer todo el tema</button>
-          <select class="speed" id="repeatPick" aria-label="Repetir cada frase">${["1", "2", "3", "5", "inf"].map(v => `<option value="${v}"${opts.repeat === v ? " selected" : ""}>Repetir: ${v === "inf" ? "∞" : v + "×"}</option>`).join("")}</select>
-          <button class="toggle" id="echoBtn" type="button" aria-pressed="${opts.echo}" title="Después de cada frase, una pausa del mismo largo para que la repitas">🗣 Modo eco</button></div>` : ""}
+        ${tts ? `<div class="actions play-all"><button class="act play" id="playAll" type="button">▶ Read whole topic</button>
+          <select class="speed" id="repeatPick" aria-label="Repeat each phrase">${["1", "2", "3", "5", "inf"].map(v => `<option value="${v}"${opts.repeat === v ? " selected" : ""}>Repeat: ${v === "inf" ? "∞" : v + "×"}</option>`).join("")}</select>
+          <button class="toggle" id="echoBtn" type="button" aria-pressed="${opts.echo}" title="After each phrase, a pause as long as the phrase so you can repeat it">🗣 Echo mode</button></div>` : ""}
       </div>`;
     view.innerHTML = `
       <div class="cards">${t.items.map((it, i) => card(it, i)).join("")}</div>
@@ -661,18 +661,18 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     view.querySelectorAll(".hidden-en").forEach(el => el.onclick = () => { el.classList.remove("hidden-en"); const h = el.nextElementSibling; if (h && h.classList.contains("reveal-hint")) h.remove() });
   }
   function card(it, i) {
-    const ask = it.q ? `<div class="ask"><div class="lbl">El estudiante pregunta</div><div class="q">${esc(it.q)}</div>${opts.es && it.qes ? `<div class="qes">${esc(it.qes)}</div>` : ""}
-      ${tts ? `<div class="actions" style="margin-top:6px"><button class="act" type="button" data-say="${i}" data-kind="q">▶ Escuchar pregunta</button></div>` : ""}</div>`
-      : it.qes ? `<div class="ask"><div class="lbl">Situación</div><div class="q">${esc(it.qes)}</div></div>` : "";
+    const ask = it.q ? `<div class="ask"><div class="lbl">Student asks</div><div class="q">${esc(it.q)}</div>${opts.es && it.qes ? `<div class="qes">${esc(it.qes)}</div>` : ""}
+      ${tts ? `<div class="actions" style="margin-top:6px"><button class="act" type="button" data-say="${i}" data-kind="q">▶ Listen to question</button></div>` : ""}</div>`
+      : it.qes ? `<div class="ask"><div class="lbl">Situation</div><div class="q">${esc(it.qes)}</div></div>` : "";
     const hide = opts.practice;
     return `<article class="card">
       ${ask}
-      ${it.q || it.qes ? `<div class="ans-lbl">Di esto</div>` : ""}
+      ${it.q || it.qes ? `<div class="ans-lbl">Say this</div>` : ""}
       <div class="en ${hide ? "hidden-en" : ""}">${esc(it.en)}</div>
       ${hide ? `<div class="reveal-hint">Di la frase en inglés y toca el texto para comprobar.</div>` : ""}
       ${opts.pron && (it.pron || autoPron(it.en)) ? `<div class="pron">Pronunciación: ${pronHtml(it.pron || autoPron(it.en))}</div>` : ""}
       ${opts.es && it.es ? `<div class="es">${esc(it.es)}</div>` : ""}
-      ${tts ? `<div class="actions"><button class="act play" type="button" data-say="${i}">▶ Escuchar</button><button class="act" type="button" data-say="${i}" data-rate="0.6">Muy lento</button></div>` : ""}
+      ${tts ? `<div class="actions"><button class="act play" type="button" data-say="${i}">▶ Listen</button><button class="act" type="button" data-say="${i}" data-rate="0.6">Very slow</button></div>` : ""}
     </article>`;
   }
 
@@ -865,10 +865,10 @@ COURSE CONTEXT:
       const r = await sampleFn.json(prompt, { modelTier: "quick", signal: ctl.signal });
       const it = { q: String(r.question_en || ""), en: String(r.answer_en || ""), es: String(r.answer_es || ""), pron: String(r.pron || "") };
       lastQ = it.q || text;
-      bot.innerHTML = `${it.q ? `<div class="qen">Pregunta: ${esc(it.q)}</div>` : ""}<div class="ans-lbl">Di esto</div><div class="aen">${esc(it.en)}</div>
+      bot.innerHTML = `${it.q ? `<div class="qen">Pregunta: ${esc(it.q)}</div>` : ""}<div class="ans-lbl">Say this</div><div class="aen">${esc(it.en)}</div>
         ${opts.pron && it.pron ? `<div class="pron">Pronunciación: ${pronHtml(it.pron)}</div>` : ""}
         ${opts.es && it.es ? `<div class="es">${esc(it.es)}</div>` : ""}
-        ${tts ? `<div class="actions"><button class="act play" type="button" data-n="1">▶ Escuchar</button><button class="act" type="button" data-n="0.6">Muy lento</button></div>` : ""}`;
+        ${tts ? `<div class="actions"><button class="act play" type="button" data-n="1">▶ Listen</button><button class="act" type="button" data-n="0.6">Very slow</button></div>` : ""}`;
       bot.querySelectorAll("[data-n]").forEach(b => b.onclick = () => say(it.en, parseFloat(b.dataset.n) === 1 ? null : 0.6, b));
     } catch (e) {
       bot.classList.add("err");
@@ -919,14 +919,14 @@ COURSE CONTEXT:
   const vp = document.getElementById("voicePick");
   // Joke voices and the old robotic ones (Eloquence) are left out of the menu.
   const SKIP = /^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Grandma|Grandpa|Eddy|Flo|Reed|Rocko|Sandy|Shelley|Junior|Ralph|Fred|Kathy)\b/i;
-  const region = v => ({ US: "EE. UU.", GB: "Reino Unido", AU: "Australia", IE: "Irlanda", IN: "India", ZA: "Sudáfrica", CA: "Canadá", NZ: "N. Zelanda" })[(v.lang.split(/[-_]/)[1] || "").toUpperCase()] || v.lang;
+  const region = v => ({ US: "US", GB: "UK", AU: "Australia", IE: "Ireland", IN: "India", ZA: "South Africa", CA: "Canada", NZ: "New Zealand" })[(v.lang.split(/[-_]/)[1] || "").toUpperCase()] || v.lang;
   function fillVoices() {
     const seen = new Set();
     const vs = enVoices().filter(v => !SKIP.test(v.name) && !seen.has(v.name + v.lang) && seen.add(v.name + v.lang))
       .sort((a, b) => (isEnUS(b) - isEnUS(a)) || a.name.localeCompare(b.name));
     if (!vs.length) { vp.hidden = true; return }
     const cur = voice();
-    vp.innerHTML = vs.map(v => `<option value="${esc(v.name)}"${cur && v.name === cur.name ? " selected" : ""}>Voz: ${esc(v.name)} · ${esc(region(v))}</option>`).join("");
+    vp.innerHTML = vs.map(v => `<option value="${esc(v.name)}"${cur && v.name === cur.name ? " selected" : ""}>Voice: ${esc(v.name)} · ${esc(region(v))}</option>`).join("");
     vp.hidden = false;
   }
   vp.onchange = () => { opts.voice = vp.value; store.set("voice", vp.value); say("Hello. This is how I sound.") };
