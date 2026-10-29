@@ -76,6 +76,24 @@ h1 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 4vw, 
 .act:hover { border-color: var(--red) }
 .act.play { background: var(--navy); color: #fff; border-color: var(--navy) }
 .play-all { margin: 4px 0 0 }
+.next-pop { position: fixed; z-index: 25; top: 50%; transform: translate(-50%, -50%); left: 50% }
+.np-card { background: var(--surface); border: 1.5px solid var(--red); border-radius: 18px; padding: 22px 26px; display: grid; justify-items: center; gap: 10px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.5); animation: npIn .35s cubic-bezier(.2,.9,.3,1.3) both; min-width: 260px; text-align: center }
+@keyframes npIn { from { opacity: 0; transform: scale(.85) } to { opacity: 1; transform: scale(1) } }
+.np-t { color: var(--muted); font-size: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase }
+.np-h { font-family: var(--display); font-weight: 800; font-size: 24px }
+.np-ring.run #npArc { animation: npArc 3s linear forwards }
+@keyframes npArc { to { stroke-dashoffset: 0 } }
+.np-b { display: flex; gap: 10px }
+/* karaoke: while a phrase is spoken, the words already said light up and the current one turns red */
+.en.karaoke .w { color: var(--muted); transition: color .12s }
+.en.karaoke .w.said { color: var(--ink) }
+.en.karaoke .w.cur { color: var(--red) }
+.card.heard { opacity: .5 }
+.card.heard.reading { opacity: 1 }
+.qbtn.now { color: var(--red); font-weight: 700; background: var(--chip) }
+.qbtn.heard { opacity: .45 }
+@media (prefers-reduced-motion: reduce) { .np-card { animation: none } }
 /* the topic title and "Leer todo" stay fixed under the blue bar; the phrases slide underneath */
 .topic-head { margin-inline: -16px; padding-inline: 16px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--barH, 0px)); z-index: 4;
   background: rgba(11, 17, 28, .72); -webkit-backdrop-filter: blur(18px) saturate(120%); backdrop-filter: blur(18px) saturate(120%);
@@ -200,6 +218,14 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
 <main id="view"></main>
 <div class="swipe-hint" id="swipeHint" aria-hidden="true">‹</div>
 <div class="pull-hint" id="pullHint" aria-hidden="true">↻</div>
+<div class="next-pop" id="nextPop" role="dialog" aria-live="polite" hidden>
+  <div class="np-card">
+    <span class="np-t">Siguiente tema</span>
+    <span class="np-h" id="npTitle"></span>
+    <svg class="np-ring" width="76" height="76" viewBox="0 0 76 76" aria-hidden="true"><circle cx="38" cy="38" r="30" fill="none" stroke="var(--line)" stroke-width="6"/><circle id="npArc" cx="38" cy="38" r="30" fill="none" stroke="var(--red)" stroke-width="6" stroke-linecap="round" transform="rotate(-90 38 38)" stroke-dasharray="188.5" stroke-dashoffset="188.5"/><text x="38" y="46" text-anchor="middle" font-size="26" font-weight="700" fill="var(--ink)">›</text></svg>
+    <div class="np-b"><button type="button" class="act" id="npCancel">Cancelar</button><button type="button" class="act play" id="npGo">Ir ahora ›</button></div>
+  </div>
+</div>
 <div class="reader-bar" id="readerBar" hidden><button type="button" id="readerStop">■ Detener</button><span id="readerCount"></span></div>
 <div class="sel-say" id="selSay" hidden><button type="button" data-rate="">🔊 Escuchar</button><button type="button" data-rate="0.6">Lento</button></div>
 <button class="fab" id="fab" type="button" aria-haspopup="dialog">☰ Temas</button>
@@ -289,7 +315,61 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   }
   // "Leer todo el tema": reads every phrase in order, scrolling each one into view and marking it.
   let reading = null;
+  // Karaoke on a card's English text: words light up as the voice says them (only voices that report words do this).
+  function karaoke(card, text, u) {
+    const el = card && card.querySelector(".en");
+    if (!el || el.textContent !== text) return;
+    let pos = 0;
+    el.innerHTML = text.split(/(\s+)/).map(part => { const start = pos; pos += part.length; return /\S/.test(part) ? `<span class="w" data-s="${start}">${esc(part)}</span>` : part }).join("");
+    const words = [...el.querySelectorAll(".w")];
+    u.onboundary = e => {
+      if (e.name && e.name !== "word") return;
+      el.classList.add("karaoke");
+      let cur = null;
+      words.forEach(w => { const said = +w.dataset.s <= e.charIndex; w.classList.toggle("said", said); w.classList.remove("cur"); if (said) cur = w });
+      if (cur) cur.classList.add("cur");
+    };
+    return () => { el.classList.remove("karaoke"); words.forEach(w => w.classList.remove("said", "cur")) };
+  }
+  function panelMark(i, cls) {
+    const b = document.querySelector(`#sheetList [data-card="${i}"]`);
+    if (!b) return;
+    if (cls === "now") {
+      document.querySelectorAll("#sheetList .qbtn.now").forEach(x => x.classList.remove("now"));
+      const body = sheet.querySelector(".sheet-body"), br = b.getBoundingClientRect(), pr = body.getBoundingClientRect();
+      if (br.top < pr.top + 60 || br.bottom > pr.bottom - 60) body.scrollTop += br.top - pr.top - pr.height / 3;
+    }
+    if (cls === "heard") b.classList.remove("now");
+    b.classList.add(cls);
+  }
+  function markHeard(card, i) { if (card) card.classList.add("heard"); panelMark(i, "heard") }
+
+  // When a whole topic was read: a small window counts 3 seconds with a ring, then opens and reads the next topic.
+  let nextTimer = null;
+  function hideNext() { clearTimeout(nextTimer); nextTimer = null; document.getElementById("nextPop").hidden = true }
+  function offerNext(sid, idx, run) {
+    const sec = S.find(x => x.id === sid), nxt = sec.topics[idx + 1];
+    if (!nxt) { stopReading(); return }
+    const pop = document.getElementById("nextPop"), ring = pop.querySelector(".np-ring");
+    document.getElementById("npTitle").textContent = nxt.title;
+    const r = view.getBoundingClientRect();
+    pop.style.left = (r.left + r.width / 2) + "px";
+    pop.hidden = false;
+    ring.classList.remove("run"); void ring.getBoundingClientRect(); ring.classList.add("run");
+    const go = () => {
+      hideNext();
+      if (reading !== run) return;
+      stack[stack.length - 1] = { v: "topic", s: sid, t: nxt.id }; history.replaceState({ depth: stack.length }, ""); render();
+      const pa = document.getElementById("playAll");
+      if (pa) startReading(nxt.items, pa, sid, idx + 1);
+    };
+    nextTimer = setTimeout(go, 3000);
+    document.getElementById("npGo").onclick = go;
+    document.getElementById("npCancel").onclick = () => { hideNext(); stopReading() };
+  }
+
   function stopReading() {
+    hideNext();
     if (!reading) return;
     const r = reading; reading = null;
     speechSynthesis.cancel();
@@ -303,10 +383,11 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     if (!head) return 0;
     return head.getBoundingClientRect().bottom + parseFloat(getComputedStyle(head).marginBottom || 0);
   }
-  function startReading(items, btn) {
+  function startReading(items, btn, sid, idx) {
     view.style.paddingBottom = window.innerHeight + "px";  // room so the last phrases can also reach the reading place
     speechSynthesis.cancel(); resetBtn();
-    reading = { btn };
+    reading = { btn, sid, idx };
+    view.querySelectorAll(".card.heard").forEach(c => c.classList.remove("heard"));
     btn.innerHTML = "■ Detener lectura"; btn.classList.add("stopping");
     document.getElementById("readerBar").hidden = false;
     readAt(0, items, reading);
@@ -315,8 +396,9 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     if (reading !== run) return;
     const cards = view.querySelectorAll(".card");
     view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
-    if (i >= items.length || !cards[i]) { stopReading(); return }
+    if (i >= items.length || !cards[i]) { offerNext(run.sid, run.idx, run); return }
     cards[i].classList.add("reading");
+    panelMark(i, "now");
     document.getElementById("readerCount").textContent = `Frase ${i + 1} de ${items.length}`;
     // Each phrase takes the exact place of the first one: right under the fixed topic title, measured live on this screen.
     // The previous card scrolls up behind the blurred header.
@@ -326,8 +408,9 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     const u = new SpeechSynthesisUtterance(items[i].en);
     const v = voice(); if (v) u.voice = v;
     u.lang = "en-US"; u.rate = parseFloat(opts.speed);
-    u.onend = () => { if (reading === run) setTimeout(() => readAt(i + 1, items, run), 700) };
-    u.onerror = () => { if (reading === run) stopReading() };
+    const undo = karaoke(cards[i], items[i].en, u);
+    u.onend = () => { if (undo) undo(); markHeard(cards[i], i); if (reading === run) setTimeout(() => readAt(i + 1, items, run), 700) };
+    u.onerror = () => { if (undo) undo(); if (reading === run) stopReading() };
     speechSynthesis.speak(u);
   }
 
@@ -347,7 +430,11 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     u.lang = "en-US"; u.rate = rate || parseFloat(opts.speed);
     if (btn) {
       btn.dataset.label = btn.innerHTML; btn.innerHTML = "■ Detener"; btn.classList.add("stopping"); speakingBtn = btn;
-      u.onend = u.onerror = () => { if (speakingBtn === btn) resetBtn() };
+      const card = btn.closest(".card"), undo = card ? karaoke(card, text, u) : null;
+      const i = card ? [...view.querySelectorAll(".card")].indexOf(card) : -1;
+      if (undo) panelMark(i, "now");
+      u.onend = () => { if (undo) { undo(); markHeard(card, i) } if (speakingBtn === btn) resetBtn() };
+      u.onerror = () => { if (undo) undo(); if (speakingBtn === btn) resetBtn() };
     }
     speechSynthesis.speak(u);
   }
@@ -499,7 +586,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
       ${tts ? "" : `<p class="note">Este navegador no tiene voz en inglés disponible: el botón Escuchar no aparece.</p>`}`;
     view.querySelectorAll("[data-jump]").forEach(b => b.onclick = () => { stack[stack.length - 1] = { v: "topic", s: sid, t: b.dataset.jump }; history.replaceState({ depth: stack.length }, ""); render() });
     const pa = document.getElementById("playAll");
-    if (pa) pa.onclick = () => { if (reading) stopReading(); else startReading(t.items, pa) };
+    if (pa) pa.onclick = () => { if (reading) stopReading(); else startReading(t.items, pa, sid, idx) };
     view.querySelectorAll("[data-say]").forEach(b => b.onclick = () => { const it = t.items[+b.dataset.say]; say(b.dataset.kind === "q" ? it.q : it.en, b.dataset.rate ? parseFloat(b.dataset.rate) : null, b) });
     view.querySelectorAll(".hidden-en").forEach(el => el.onclick = () => { el.classList.remove("hidden-en"); const h = el.nextElementSibling; if (h && h.classList.contains("reveal-hint")) h.remove() });
   }
@@ -520,7 +607,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   }
 
   function render() {
-    if (tts) { reading = null; speechSynthesis.cancel(); speakingBtn = null; document.getElementById("readerBar").hidden = true; view.style.paddingBottom = "" }
+    if (tts) { hideNext(); reading = null; speechSynthesis.cancel(); speakingBtn = null; document.getElementById("readerBar").hidden = true; view.style.paddingBottom = "" }
     const st = stack[stack.length - 1];
     document.getElementById("back").disabled = stack.length < 2;
     document.getElementById("back").style.visibility = stack.length < 2 ? "hidden" : "visible";
