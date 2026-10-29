@@ -74,6 +74,8 @@ h1 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 4vw, 
 .act { border: 1.5px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 14px; font-weight: 700; font-size: 15px; min-height: 44px }
 .act:hover { border-color: var(--red) }
 .act.play { background: var(--navy); color: #fff; border-color: var(--navy) }
+.play-all { margin: 6px 0 16px }
+.card.reading { border-color: var(--red); box-shadow: 0 0 0 3px rgba(255,90,110,.25) }
 .act.stopping, .sel-say button.stopping { background: var(--red); color: #fff; border-color: var(--red) }
 .hidden-en { filter: blur(7px); user-select: none; cursor: pointer }
 .reveal-hint { font-size: 13px; color: var(--muted) }
@@ -269,6 +271,36 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     const chosen = opts.voice && enVoices().find(v => v.name === opts.voice);
     return chosen || bestVoice();
   }
+  // "Leer todo el tema": reads every phrase in order, scrolling each one into view and marking it.
+  let reading = null;
+  function stopReading() {
+    if (!reading) return;
+    const r = reading; reading = null;
+    speechSynthesis.cancel();
+    r.btn.innerHTML = "▶ Leer todo el tema"; r.btn.classList.remove("stopping");
+    view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
+  }
+  function startReading(items, btn) {
+    speechSynthesis.cancel(); resetBtn();
+    reading = { btn };
+    btn.innerHTML = "■ Detener lectura"; btn.classList.add("stopping");
+    readAt(0, items, reading);
+  }
+  function readAt(i, items, run) {
+    if (reading !== run) return;
+    const cards = view.querySelectorAll(".card");
+    view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
+    if (i >= items.length || !cards[i]) { stopReading(); return }
+    cards[i].classList.add("reading");
+    cards[i].scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    const u = new SpeechSynthesisUtterance(items[i].en);
+    const v = voice(); if (v) u.voice = v;
+    u.lang = "en-US"; u.rate = parseFloat(opts.speed);
+    u.onend = () => { if (reading === run) setTimeout(() => readAt(i + 1, items, run), 700) };
+    u.onerror = () => { if (reading === run) stopReading() };
+    speechSynthesis.speak(u);
+  }
+
   // The button that started the voice turns into "■ Detener" until the phrase ends; pressing it again stops.
   let speakingBtn = null;
   function resetBtn() {
@@ -276,6 +308,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   }
   function say(text, rate, btn) {
     if (!tts) return;
+    stopReading();
     const same = btn && btn === speakingBtn;
     speechSynthesis.cancel(); resetBtn();
     if (same) return;  // second press = stop
@@ -425,6 +458,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     view.innerHTML = `
       <div class="eyebrow">${esc(s.title)}</div>
       <h1>${esc(t.title)}</h1>
+      ${tts ? `<div class="actions play-all"><button class="act play" id="playAll" type="button">▶ Leer todo el tema</button></div>` : ""}
       <div class="cards">${t.items.map((it, i) => card(it, i)).join("")}</div>
       <div class="next">
         ${idx > 0 ? `<button class="act" type="button" data-jump="${s.topics[idx - 1].id}">‹ ${esc(s.topics[idx - 1].title)}</button>` : "<span></span>"}
@@ -432,6 +466,8 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
       </div>
       ${tts ? "" : `<p class="note">Este navegador no tiene voz en inglés disponible: el botón Escuchar no aparece.</p>`}`;
     view.querySelectorAll("[data-jump]").forEach(b => b.onclick = () => { stack[stack.length - 1] = { v: "topic", s: sid, t: b.dataset.jump }; history.replaceState({ depth: stack.length }, ""); render() });
+    const pa = document.getElementById("playAll");
+    if (pa) pa.onclick = () => { if (reading) stopReading(); else startReading(t.items, pa) };
     view.querySelectorAll("[data-say]").forEach(b => b.onclick = () => { const it = t.items[+b.dataset.say]; say(b.dataset.kind === "q" ? it.q : it.en, b.dataset.rate ? parseFloat(b.dataset.rate) : null, b) });
     view.querySelectorAll(".hidden-en").forEach(el => el.onclick = () => { el.classList.remove("hidden-en"); const h = el.nextElementSibling; if (h && h.classList.contains("reveal-hint")) h.remove() });
   }
@@ -452,7 +488,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   }
 
   function render() {
-    if (tts) { speechSynthesis.cancel(); speakingBtn = null }
+    if (tts) { reading = null; speechSynthesis.cancel(); speakingBtn = null }
     const st = stack[stack.length - 1];
     document.getElementById("back").disabled = stack.length < 2;
     document.getElementById("back").style.visibility = stack.length < 2 ? "hidden" : "visible";
