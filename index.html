@@ -633,10 +633,22 @@ COURSE CONTEXT:
     window.claude.use("sample").then(fn => { sampleFn = fn; applyChat() }).catch(() => {});
   }
 
+  // Re-draw after a display option changes, keeping the same phrase in the same place on screen.
+  function renderKeepPlace() {
+    const cards = [...view.querySelectorAll(".card")];
+    const bar = document.querySelector(".bar").getBoundingClientRect().bottom;
+    const i = cards.findIndex(c => c.getBoundingClientRect().bottom > bar + 8);
+    const offset = i >= 0 ? cards[i].getBoundingClientRect().top : 0;
+    const y = window.scrollY;
+    render();
+    const again = view.querySelectorAll(".card")[i];
+    if (i >= 0 && again) window.scrollBy(0, again.getBoundingClientRect().top - offset);
+    else window.scrollTo(0, y);
+  }
   function bindToggle(id, key) {
     const b = document.getElementById(id);
     b.setAttribute("aria-pressed", String(opts[key]));
-    b.onclick = () => { opts[key] = !opts[key]; store.set(key, opts[key]); b.setAttribute("aria-pressed", String(opts[key])); render() };
+    b.onclick = () => { opts[key] = !opts[key]; store.set(key, opts[key]); b.setAttribute("aria-pressed", String(opts[key])); renderKeepPlace() };
   }
   bindToggle("optEs", "es"); bindToggle("optPractice", "practice"); bindToggle("optPron", "pron");
   const sp = document.getElementById("speed"); sp.value = opts.speed;
