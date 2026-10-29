@@ -127,7 +127,10 @@ main.in-topic { padding-top: 14px }
 .rb-track button { flex: 1; width: auto; height: 14px; min-width: 6px; border-radius: 0; background: none; position: relative }
 .rb-track button::after { content: ""; position: absolute; left: 0; right: 0; top: 5px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.35) }
 .rb-track button.done::after { background: rgba(255,255,255,.75) }
-.rb-track button.now::after { background: #fff; top: 4px; height: 6px }
+.rb-track button.now::after { top: 4px; height: 6px }
+/* the current phrase fills with white as the voice says it */
+.rb-track button i { position: absolute; z-index: 1; left: 0; top: 4px; height: 6px; width: 0; border-radius: 3px; background: #fff; pointer-events: none }
+.rb-track button:not(.now) i { display: none }
 .rb-track button:hover { background: none }
 .rb-track button:hover::after { background: #fff }
 @media (max-width: 480px) { .reader-bar .rb-count { min-width: 0; padding: 0 4px; font-size: 14px } .reader-bar button { width: 38px; height: 38px } .reader-bar #readerPlay { width: 44px; height: 44px } }
@@ -469,7 +472,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     view.style.paddingBottom = window.innerHeight + "px";  // room so the last phrases can also reach the reading place
     speechSynthesis.cancel(); resetBtn();
     reading = { btn, sid, idx, items, i: 0, timer: null, gen: 0, undo: null, paused: false, total: repeats() };
-    document.getElementById("readerTrack").innerHTML = items.map((_, k) => `<button type="button" data-k="${k}" aria-label="Phrase ${k + 1}"></button>`).join("");
+    document.getElementById("readerTrack").innerHTML = items.map((_, k) => `<button type="button" data-k="${k}" aria-label="Phrase ${k + 1}"><i></i></button>`).join("");
     setPlayIcon(false);
     view.querySelectorAll(".card.heard").forEach(c => c.classList.remove("heard"));
     btn.innerHTML = "■ Stop reading"; btn.classList.add("stopping");
@@ -488,6 +491,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     document.getElementById("readerCount").textContent =
       `Phrase ${i + 1} of ${items.length}` + (run.total > 1 ? ` · ${rep}/${run.total === Infinity ? "∞" : run.total}` : "");
     document.querySelectorAll("#readerTrack button").forEach((b, k) => { b.classList.toggle("now", k === i); b.classList.toggle("done", k < i) });
+    cancelAnimationFrame(fillRaf); setFill(0);
     if (rep === 1) {
       // Each phrase takes the exact place of the first one: right under the fixed topic title, measured live on this screen.
       // The previous card scrolls up behind the blurred header.
@@ -500,11 +504,13 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     const v = voice(); if (v) u.voice = v;
     u.lang = "en-US"; u.rate = parseFloat(opts.speed);
     const undo = run.undo = karaoke(cards[i], items[i].en, u);
+    runFill(u, items[i].en, run, gen);
     let started = 0;
     u.onstart = () => { started = performance.now() };
     const finished = () => {
       if (undo) undo();
       if (reading !== run || run.gen !== gen) return;  // stopped, or a player button already moved on
+      cancelAnimationFrame(fillRaf); setFill(1);
       const last = rep >= run.total;
       if (last) markHeard(cards[i], i);
       run.timer = setTimeout(() => last ? readAt(i + 1, items, run, 1) : readAt(i, items, run, rep + 1),
@@ -528,6 +534,22 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     if (j > run.i) for (let k = run.i; k < j; k++) markHeard(cards[k], k);
     if (run.paused && j >= run.items.length) j = run.items.length - 1;
     readAt(Math.max(0, j), run.items, run, 1);
+  }
+  // How much of the phrase is said: the time spent against an estimate from its words and the speed,
+  // pushed forward by the word the voice reports (when it does); it holds just short of the end until the voice finishes.
+  let fillRaf = 0;
+  function setFill(p) { const el = document.querySelector("#readerTrack .now i"); if (el) el.style.width = (p * 100).toFixed(1) + "%" }
+  function runFill(u, text, run, gen) {
+    let t0 = null, said = 0;
+    const est = Math.max(900, text.split(/\s+/).length * 60000 / (165 * (u.rate || 1)));
+    u.addEventListener("start", () => { t0 = performance.now() });
+    u.addEventListener("boundary", e => { said = Math.max(said, e.charIndex / text.length) });
+    const tick = () => {
+      if (reading !== run || run.gen !== gen) return;
+      if (t0 !== null) setFill(Math.min(.97, Math.max((performance.now() - t0) / est, said)));
+      fillRaf = requestAnimationFrame(tick);
+    };
+    fillRaf = requestAnimationFrame(tick);
   }
   const readNext = () => reading && readJump(reading.i + 1);
   const readPrev = () => reading && readJump(reading.i - 1);
