@@ -350,12 +350,13 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
 
   // When a whole topic was read: a small window counts 3 seconds with a ring, then opens and reads the next topic.
   let nextTimer = null;
-  document.addEventListener("keydown", e => {
+  // Keyboard Enter while the window shows = go now (caught first, so a focused "Detener" button never gets it); Esc = cancel.
+  window.addEventListener("keydown", e => {
     const pop = document.getElementById("nextPop");
     if (pop.hidden) return;
-    if (e.key === "Enter") { e.preventDefault(); document.getElementById("npGo").click() }
-    else if (e.key === "Escape") { e.preventDefault(); document.getElementById("npCancel").click() }
-  });
+    if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); document.getElementById("npGo").click() }
+    else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); document.getElementById("npCancel").click() }
+  }, true);
   function hideNext() { clearTimeout(nextTimer); nextTimer = null; document.getElementById("nextPop").hidden = true }
   // The next topic in this section, or else the first topic of the next section (Reunión 1:1 → Problemas técnicos → …).
   function nextTopic(sid, idx) {
@@ -374,6 +375,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     pop.style.left = (r.left + r.width / 2) + "px";
     pop.hidden = false;
     ring.classList.remove("run"); void ring.getBoundingClientRect(); ring.classList.add("run");
+    try { window.focus(); document.getElementById("npGo").focus({ preventScroll: true }) } catch (e) {}
     const go = () => {
       hideNext();
       if (reading !== run) return;
