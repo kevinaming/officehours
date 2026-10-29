@@ -94,14 +94,14 @@ h1 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 4vw, 
 .qbtn.now { color: var(--red); font-weight: 700; background: var(--chip) }
 .qbtn.heard { opacity: .45 }
 @media (prefers-reduced-motion: reduce) { .np-card { animation: none } }
-/* the topic title and "Leer todo" stay fixed under the blue bar; the phrases slide underneath */
-.topic-head { margin-inline: -16px; padding-inline: 16px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--barH, 0px)); z-index: 4;
-  background: rgba(11, 17, 28, .72); -webkit-backdrop-filter: blur(18px) saturate(120%); backdrop-filter: blur(18px) saturate(120%);
-  padding-block: 10px 12px; margin-bottom: 14px; border-bottom: 1.5px solid var(--line) }
+/* the topic title and "Leer todo" are part of the fixed bar, so they never move; the phrases slide underneath */
+#barTopic:empty { display: none }
+#barTopic { margin: 10px calc(-1 * max(16px, env(safe-area-inset-right, 0px))) -10px calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
+  background: rgba(11, 17, 28, .72); border-bottom: 1.5px solid var(--line); color: var(--ink) }
+.topic-head { max-width: 980px; margin: 0 auto; padding-block: 14px 12px }
 .topic-head h1 { margin: 2px 0 4px }
-/* inside a topic the header starts right under the bar, so it never moves when you scroll */
-main.in-topic { padding-top: 0 }
-.topic-head { padding-top: 22px }
+main.in-topic { padding-top: 14px }
 /* floating control while the whole topic is read aloud */
 .reader-bar { position: fixed; z-index: 16; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   display: flex; align-items: center; gap: 12px; background: var(--red); color: #fff; border-radius: 999px; padding: 6px 18px 6px 6px;
@@ -218,6 +218,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     <select class="speed" id="voicePick" aria-label="Voz" hidden></select>
   </div>
   <nav class="chips" id="chips" aria-label="Temas del módulo" hidden></nav>
+  <div id="barTopic"></div>
 </header>
 <main id="view"></main>
 <div class="swipe-hint" id="swipeHint" aria-hidden="true">‹</div>
@@ -401,9 +402,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     view.querySelectorAll(".card.reading").forEach(c => c.classList.remove("reading"));
   }
   function readingAnchor() {
-    const head = view.querySelector(".topic-head");
-    if (!head) return 0;
-    return head.getBoundingClientRect().bottom + parseFloat(getComputedStyle(head).marginBottom || 0);
+    return document.querySelector(".bar").getBoundingClientRect().bottom + parseFloat(getComputedStyle(view).paddingTop || 0);
   }
   const repeats = () => opts.repeat === "inf" ? Infinity : parseInt(opts.repeat, 10) || 1;
   // Pause after a phrase: in echo mode as long as the phrase itself, so you can say it back.
@@ -637,14 +636,15 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     const idx = s.topics.findIndex(x => x.id === tid);
     const t = s.topics[idx];
     crumb.textContent = `${s.title} › ${t.title}`;
-    view.innerHTML = `
+    document.getElementById("barTopic").innerHTML = `
       <div class="topic-head">
         <div class="eyebrow">${esc(s.title)}</div>
         <h1>${esc(t.title)}</h1>
         ${tts ? `<div class="actions play-all"><button class="act play" id="playAll" type="button">▶ Leer todo el tema</button>
           <select class="speed" id="repeatPick" aria-label="Repetir cada frase">${["1", "2", "3", "5", "inf"].map(v => `<option value="${v}"${opts.repeat === v ? " selected" : ""}>Repetir: ${v === "inf" ? "∞" : v + "×"}</option>`).join("")}</select>
           <button class="toggle" id="echoBtn" type="button" aria-pressed="${opts.echo}" title="Después de cada frase, una pausa del mismo largo para que la repitas">🗣 Modo eco</button></div>` : ""}
-      </div>
+      </div>`;
+    view.innerHTML = `
       <div class="cards">${t.items.map((it, i) => card(it, i)).join("")}</div>
       <div class="next">
         ${idx > 0 ? `<button class="act" type="button" data-jump="${s.topics[idx - 1].id}">‹ ${esc(s.topics[idx - 1].title)}</button>` : "<span></span>"}
@@ -685,6 +685,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     else if (st.v === "section") renderSection(st.s);
     else renderTopic(st.s, st.t);
     view.classList.toggle("in-topic", st.v === "topic");
+    if (st.v !== "topic") document.getElementById("barTopic").innerHTML = "";
     renderChips(st);
     setBarH();
     if (!sheet.hidden) renderSheet();
@@ -895,8 +896,7 @@ COURSE CONTEXT:
   // Re-draw after a display option changes, keeping the same phrase in the same place on screen.
   function renderKeepPlace() {
     const cards = [...view.querySelectorAll(".card")];
-    const head = view.querySelector(".topic-head");
-    const bar = (head || document.querySelector(".bar")).getBoundingClientRect().bottom;
+    const bar = document.querySelector(".bar").getBoundingClientRect().bottom;
     const i = cards.findIndex(c => c.getBoundingClientRect().bottom > bar + 8);
     const offset = i >= 0 ? cards[i].getBoundingClientRect().top : 0;
     const y = window.scrollY;
