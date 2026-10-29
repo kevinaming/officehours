@@ -34,7 +34,15 @@ button:focus-visible, select:focus-visible { outline: 3px solid var(--red); outl
 .navbtn { background: rgba(255,255,255,.12); border: 0; border-radius: 10px; padding: 10px 16px; font-weight: 700; color: #fff; min-height: 46px }
 .navbtn:hover { background: rgba(255,255,255,.22) }
 .crumb { flex: 1; min-width: 0; font-family: var(--display); font-weight: 600; font-size: 15px; letter-spacing: .02em; opacity: .9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
-.opts { max-width: 980px; margin: 8px auto 0; display: flex; gap: 8px; flex-wrap: wrap }
+.opts { max-width: 980px; margin: 0 auto; padding-top: 8px; display: flex; gap: 8px; flex-wrap: wrap }
+/* the options row folds away; the arrow button in the top row opens it */
+.opts-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease }
+.opts-wrap > .opts { min-height: 0; overflow: hidden }
+.opts-wrap.open { grid-template-rows: 1fr }
+.opts-wrap.open.shown > .opts { overflow: visible }  /* after it opens, the selector lists can float over the content */
+.optsBtn { display: inline-flex; align-items: center; gap: 8px }
+.optsBtn .chev { width: 9px; height: 9px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .25s }
+.optsBtn[aria-expanded="true"] .chev { transform: translateY(2px) rotate(-135deg) }
 .toggle { background: transparent; border: 1.5px solid rgba(255,255,255,.35); color: #fff; border-radius: 999px; padding: 6px 14px; font-size: 14px; min-height: 38px }
 .toggle[aria-pressed="true"] { background: #fff; color: #0C1422; border-color: #fff; font-weight: 700 }
 .speed { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.35); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 14px; min-height: 38px }
@@ -226,9 +234,10 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
   <div class="bar-row">
     <button class="navbtn" id="back" type="button">‹ Back</button>
     <div class="crumb" id="crumb">Inicio</div>
+    <button class="navbtn optsBtn" id="optsBtn" type="button" aria-expanded="false" aria-controls="optsWrap">Options <span class="chev" aria-hidden="true"></span></button>
     <button class="navbtn" id="home" type="button">Home</button>
   </div>
-  <div class="opts">
+  <div class="opts-wrap" id="optsWrap"><div class="opts" inert>
     <button class="toggle" id="optEs" type="button" aria-pressed="true">Spanish</button>
     <button class="toggle" id="optPractice" type="button" aria-pressed="false">Practice mode</button>
     <button class="toggle" id="optPron" type="button" aria-pressed="true">Pronunciation</button>
@@ -238,7 +247,7 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
       <option value="1">Fast voice</option>
     </select>
     <select class="speed" id="voicePick" aria-label="Voz" hidden></select>
-  </div>
+  </div></div>
   <nav class="chips" id="chips" aria-label="Temas del módulo" hidden></nav>
   <div id="barTopic"></div>
 </header>
@@ -958,6 +967,21 @@ COURSE CONTEXT:
   }
   document.addEventListener("click", e => { if (!e.target.closest(".drop")) closeDrops() });
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrops() });
+
+  // Options row: folded by default, the arrow button opens and closes it (remembered)
+  const optsWrap = document.getElementById("optsWrap"), optsBtn = document.getElementById("optsBtn");
+  function showOpts(on) {
+    if (!on) closeDrops();
+    optsWrap.classList.toggle("open", on);
+    if (!on) optsWrap.classList.remove("shown");
+    optsWrap.firstElementChild.inert = !on;
+    optsBtn.setAttribute("aria-expanded", on);
+    store.set("optsOpen", on);
+  }
+  optsWrap.addEventListener("transitionend", () => { if (optsWrap.classList.contains("open")) optsWrap.classList.add("shown") });
+  optsBtn.onclick = () => showOpts(!optsWrap.classList.contains("open"));
+  showOpts(store.get("optsOpen", false));
+  if (optsWrap.classList.contains("open")) optsWrap.classList.add("shown");
 
   bindToggle("optEs", "es"); bindToggle("optPractice", "practice"); bindToggle("optPron", "pron");
   const sp = document.getElementById("speed"); sp.value = opts.speed;
