@@ -11,17 +11,13 @@
 <style>
 /* Layout: a sticky navigation bar, then one view at a time (home → section → topic), big touch targets for a tablet. */
 :root {
-  --bg: #F3F4F7; --surface: #FFFFFF; --ink: #121A2B; --muted: #5B6476;
-  --navy: #0C1422; --red: #C0122A; --line: #DCE0E8; --chip: #E9ECF3; --es: #3D4A63;
+  /* One dark look on every browser (Kevin prefers it). */
+  --bg: #0B111C; --surface: #141C2B; --ink: #EEF1F6; --muted: #9AA4B6;
+  --navy: #22324F; --red: #FF5A6E; --line: #273249; --chip: #1D2738; --es: #B9C3D6;
   --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
   --body: "Atkinson Hyperlegible", "Segoe UI", Verdana, sans-serif;
+  color-scheme: dark;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0B111C; --surface: #141C2B; --ink: #EEF1F6; --muted: #9AA4B6;
-  --navy: #22324F; --red: #FF5A6E; --line: #273249; --chip: #1D2738; --es: #B9C3D6; color-scheme: dark } }
-:root[data-theme="dark"] {
-  --bg: #0B111C; --surface: #141C2B; --ink: #EEF1F6; --muted: #9AA4B6;
-  --navy: #22324F; --red: #FF5A6E; --line: #273249; --chip: #1D2738; --es: #B9C3D6; color-scheme: dark }
 
 * { box-sizing: border-box }
 [hidden] { display: none !important }
@@ -41,7 +37,7 @@ button:focus-visible, select:focus-visible { outline: 3px solid var(--red); outl
 .toggle { background: transparent; border: 1.5px solid rgba(255,255,255,.35); color: #fff; border-radius: 999px; padding: 6px 14px; font-size: 14px; min-height: 38px }
 .toggle[aria-pressed="true"] { background: #fff; color: #0C1422; border-color: #fff; font-weight: 700 }
 .speed { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.35); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 14px; min-height: 38px }
-.speed option { color: #121A2B }
+.speed option { color: var(--ink); background: var(--surface) }
 
 main { max-width: 980px; margin: 0 auto; padding-block: 22px 110px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
 h1 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 4vw, 36px); line-height: 1.1; margin: 4px 0 6px; text-wrap: balance }
