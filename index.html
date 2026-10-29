@@ -690,9 +690,16 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     if (!sheet.hidden) renderSheet();
     window.scrollTo(0, 0);
   }
+  // Put a chosen card in the reading place: right under the fixed topic title, measured live (same rule as "Leer todo").
+  function placeCard(el) {
+    view.style.paddingBottom = window.innerHeight + "px";  // room so the last cards can also reach that place
+    const target = Math.round(window.scrollY + el.getBoundingClientRect().top - readingAnchor());
+    window.scrollTo({ top: target, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    setTimeout(() => { if (Math.abs(window.scrollY - target) > 2) window.scrollTo(0, target) }, 650);  // some browsers skip smooth scrolling
+  }
   function flashCard(i) {
     const el = view.querySelectorAll(".card")[i];
-    if (el) { el.classList.remove("flash"); void el.offsetWidth; el.scrollIntoView({ block: "center" }); el.classList.add("flash") }
+    if (el) { el.classList.remove("flash"); void el.offsetWidth; placeCard(el); el.classList.add("flash") }
   }
 
   // Jump straight to any topic (from the panel or the search), keeping Atrás → section → home.
