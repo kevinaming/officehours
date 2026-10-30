@@ -285,7 +285,6 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     </select>
     <select class="speed" id="voicePick" aria-label="Voz" hidden></select>
   </div></div>
-  <nav class="chips" id="chips" aria-label="Temas del módulo" hidden></nav>
   <div id="barTopic"></div>
 </header>
 <main id="view"></main>
@@ -922,7 +921,6 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     else renderTopic(st.s, st.t);
     view.classList.toggle("in-topic", st.v === "topic");
     if (st.v !== "topic") document.getElementById("barTopic").innerHTML = "";
-    renderChips(st);
     setBarH();
     if (!sheet.hidden) renderSheet();
     window.scrollTo(0, 0);
@@ -952,20 +950,6 @@ body.docked .sheet-body { width: 100%; border-left: 1.5px solid var(--line) }
     stack = [{ v: "home" }, { v: "section", s: sid }, { v: "topic", s: sid, t: tid }];
     render();
     if (item != null) flashCard(item);
-  }
-
-  // Row of the module's topics under the bar, only inside a topic.
-  const chips = document.getElementById("chips");
-  function renderChips(st) {
-    if (st.v !== "topic") { chips.hidden = true; chips.innerHTML = ""; return }
-    const s = S.find(x => x.id === st.s);
-    chips.innerHTML = s.topics.map(t => `<button class="chip" type="button" data-chip="${t.id}" aria-current="${t.id === st.t}">${esc(t.title)}</button>`).join("");
-    chips.hidden = false;
-    chips.querySelectorAll("[data-chip]").forEach(b => b.onclick = () => {
-      stack[stack.length - 1] = { v: "topic", s: st.s, t: b.dataset.chip }; history.replaceState({ depth: stack.length }, ""); render();
-    });
-    const cur = chips.querySelector('[aria-current="true"]');
-    if (cur) chips.scrollLeft = cur.offsetLeft - chips.clientWidth / 2 + cur.offsetWidth / 2;
   }
 
   // Topics menu with search. On a wide screen it stays docked on the right until you minimise it.
